@@ -61,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("yes", "good response");
                 try {
                     JSONArray JConList = new JSONArray(response);
-                    int d = 0;
                     for(int i=0; i < JConList.length(); i++){
                         String conName;
                         JSONObject Consti = JConList.getJSONObject(i);
@@ -70,7 +69,6 @@ public class MainActivity extends AppCompatActivity {
                         Log.d("con", conName);
                         String MPURL = "https://www.theyworkforyou.com/api/getMP?constituency="+conName+"&key=DvbcgvFHgew2FECNnUCJ7frD&output=js";
                         GetMP(MPURL, conName);
-                        d++;
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
