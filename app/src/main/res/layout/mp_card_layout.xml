@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="5dp">
+
+            <ImageView
+                android:id="@+id/MPThumb"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:contentDescription="Image of MP"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/MPPartyColour"
+                android:layout_width="10dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="8dp"
+                android:contentDescription="Colour block representing MP's Political Party"
+                app:layout_constraintBottom_toBottomOf="@+id/MPThumb"
+                app:layout_constraintStart_toEndOf="@+id/MPThumb"
+                app:layout_constraintTop_toTopOf="@+id/MPThumb" />
+
+            <TextView
+                android:id="@+id/MPName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:textColor="@android:color/background_dark"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toTopOf="@+id/MPPartyName"
+                app:layout_constraintStart_toEndOf="@+id/MPPartyColour"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/MPPartyName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toTopOf="@+id/MPConName"
+                app:layout_constraintStart_toStartOf="@+id/MPName"
+                app:layout_constraintTop_toBottomOf="@+id/MPName" />
+
+            <TextView
+                android:id="@+id/MPConName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toTopOf="@+id/MPRole"
+                app:layout_constraintStart_toStartOf="@+id/MPPartyName"
+                app:layout_constraintTop_toBottomOf="@+id/MPPartyName" />
+
+            <TextView
+                android:id="@+id/MPRole"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/MPConName"
+                app:layout_constraintTop_toBottomOf="@+id/MPConName" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/MPFav"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="24dp"
+                android:clickable="true"
+                app:backgroundTint="@color/colorPrimary"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@android:drawable/btn_star_big_off" />
+        </android.support.constraint.ConstraintLayout>
+
+    </android.support.v7.widget.CardView>
+</android.support.constraint.ConstraintLayout>
