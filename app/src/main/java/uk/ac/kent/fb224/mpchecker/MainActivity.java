@@ -2,14 +2,18 @@
 package uk.ac.kent.fb224.mpchecker;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,15 +36,25 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView MPRecyclerView;
     private LinearLayoutManager layoutManager;
     private MPListAdapter adapter;
+    private DrawerLayout mDrawerLayout;
+    private ActionBarDrawerToggle mToggle;
     public String Conurl;
     private Button MenuBills;
+    private Button MPFavs;
+    private Button AllMps;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.MainToolbar);
         setSupportActionBar(toolbar);
+
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close);
+        mDrawerLayout.addDrawerListener(mToggle);
+        mToggle.syncState();
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true); todo: fix
         MenuBills = findViewById(R.id.MainBillButton);
 
 
@@ -58,7 +72,6 @@ public class MainActivity extends AppCompatActivity {
             new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Log.d("yes", "good response");
                 try {
                     JSONArray JConList = new JSONArray(response);
                     for(int i=0; i < JConList.length(); i++){
@@ -66,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
                         JSONObject Consti = JConList.getJSONObject(i);
 
                        conName = Consti.getString("name");
-                        Log.d("con", conName);
+//                        Log.d("con", conName);
                         String MPURL = "https://www.theyworkforyou.com/api/getMP?constituency="+conName+"&key=DvbcgvFHgew2FECNnUCJ7frD&output=js";
                         GetMP(MPURL, conName);
                     }
@@ -91,10 +104,36 @@ public class MainActivity extends AppCompatActivity {
 //                Intent intent = new Intent(this, BillActivity.class);
 //            }
 //        });
+
+        MPFavs = findViewById(R.id.MPFavs);
+        MPFavs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                adapter.ConList = NetManager.conFavList;
+                MPFavs.setBackgroundColor(getResources().getColor(R.color.colorPrimaryLight));
+                AllMps.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                adapter.notifyDataSetChanged();
+                Log.d("fav", "button pressed"); // Todo remove debug
+            }
+        });
+        AllMps = findViewById(R.id.MPAllMPs);
+        AllMps.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                adapter.ConList = NetManager.conList;
+                MPFavs.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                AllMps.setBackgroundColor(getResources().getColor(R.color.colorPrimaryLight));
+                adapter.notifyDataSetChanged();
+                Log.d("AllMps", "button pressed"); // Todo remove debug
+            }
+        });
+
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_nav_drawer, menu);
         return true;
     }
 
@@ -130,8 +169,6 @@ public class MainActivity extends AppCompatActivity {
                         NewCon.MPImageUrl = "https://www.theyworkforyou.com" + temp;
                     }
                     NetManager.getInstance(MainActivity.this).conList.add(NewCon);
-
-                    Log.d("MP", NewCon.MPName);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -146,5 +183,4 @@ public class MainActivity extends AppCompatActivity {
     );
         requestQueue.add(request2);
     }
-
 }
