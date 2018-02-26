@@ -1,4 +1,10 @@
 //This is the MP list screen, which at this time is also serving as a landing page for the app
+//http://lda.data.parliament.uk/bills/752025.json
+//http://lda.data.parliament.uk/bills.json?_view=Bills&_pageSize=50&_page=0
+//        String test = "http://data.parliament.uk/resources/752025";
+//        String testparse =test.substring(36);
+//        Log.d("url parse", testparse);
+
 package uk.ac.kent.fb224.mpchecker;
 
 import android.content.Intent;
@@ -57,7 +63,13 @@ public class MainActivity extends AppCompatActivity {
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true); todo: fix
         MenuBills = findViewById(R.id.MainBillButton);
 
-
+        MenuBills.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), BillActivity.class);
+                startActivity(intent);
+            }
+        });
         MPRecyclerView = (RecyclerView) findViewById(R.id.MPListView);
         layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -98,12 +110,6 @@ public class MainActivity extends AppCompatActivity {
     );
         requestQueue.add(request);
 
-//        MenuBills.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(this, BillActivity.class);
-//            }
-//        });
 
         MPFavs = findViewById(R.id.MPFavs);
         MPFavs.setOnClickListener(new View.OnClickListener() {
