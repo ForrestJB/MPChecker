@@ -3,6 +3,7 @@ package uk.ac.kent.fb224.mpchecker;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -44,7 +45,7 @@ public class BillActivity extends AppCompatActivity {
         setContentView(R.layout.bill_layout);
         Toolbar toolbar = (Toolbar) findViewById(R.id.MainToolbar);
         setSupportActionBar(toolbar);
-
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true); todo: wtf is wrong with this?
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close);
         mDrawerLayout.addDrawerListener(mToggle);
@@ -77,7 +78,6 @@ public class BillActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
             }
         }, new Response.ErrorListener() {
             @Override
@@ -91,7 +91,7 @@ public class BillActivity extends AppCompatActivity {
         NetManager NetMgr = NetManager.getInstance(getApplicationContext());
         RequestQueue requestQueue = NetMgr.requestQueue;//fetch the request queue
         String URL = "http://lda.data.parliament.uk/commonsdivisions/id/"+id+".json";
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, URL, null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest request2 = new JsonObjectRequest(Request.Method.GET, URL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 final Bill NewBill = new Bill();
@@ -123,23 +123,27 @@ public class BillActivity extends AppCompatActivity {
                     NewBill.Ayes = AyeCount;
                     NewBill.Noes = NoeCount;
                     NewBill.Name = PrimTopic.getString("title");
+                    JSONObject Dateobj = PrimTopic.getJSONObject("date");
+                    NewBill.Date = Dateobj.getString("_value");
                     Log.d("title", NewBill.Name);
                     JSONArray Votes = PrimTopic.getJSONArray("vote");
-                    for(int i=0; i < Votes.length(); i++){
-                        JSONObject Member = Votes.getJSONObject(i);
-                        String VoteParty = Member.getString("memberParty");
-                        Log.d("party", VoteParty);
-                        JSONObject Memberobj = Member.getJSONObject("memberPrinted");
-                        String MemberName = Memberobj.getString("_value");
-                        Log.d("MP name", MemberName);
-                        String VoteCont = Member.getString("type");
-                        String vote = VoteCont.substring(38);
-                        Log.d("vote", vote);
-                        //todo itemised votes
-                    }
+//                    for(int i=0; i < Votes.length(); i++){
+//                        JSONObject Member = Votes.getJSONObject(i);
+//                        String VoteParty = Member.getString("memberParty");
+//                        Log.d("party", VoteParty);
+//                        JSONObject Memberobj = Member.getJSONObject("memberPrinted");
+//                        String MemberName = Memberobj.getString("_value");
+//                        Log.d("MP name", MemberName);
+//                        String VoteCont = Member.getString("type");
+//                        String vote = VoteCont.substring(38);
+//                        Log.d("vote", vote);
+//                        //todo itemised votes
+                    NetManager.getInstance(BillActivity.this).BillList.add(NewBill);
+//                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                adapter.notifyDataSetChanged();
             }
         }, new Response.ErrorListener() {
             @Override
@@ -148,6 +152,6 @@ public class BillActivity extends AppCompatActivity {
 
             }
         });
-        requestQueue.add(request);
+        requestQueue.add(request2);
     }
 }

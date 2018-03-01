@@ -107,7 +107,7 @@ private Context context;
             MPPartyColour.setBackgroundColor(Color.rgb(212,106,76));
         }
         holder.MPRole.setText(con.MPRole);
-        holder.MPThumb.setImageUrl(con.MPImageUrl, NetManager.getInstance(context).imageLoader);
+//        holder.MPThumb.setImageUrl(con.MPImageUrl, NetManager.getInstance(context).imageLoader); todo: reimplement MP thumbs (removed for optimnisation while testing)
         if (con.isFav == true){
             holder.FavButton.setColorFilter(Color.rgb(218, 165, 32));
         }

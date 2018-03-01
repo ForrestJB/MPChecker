@@ -8,10 +8,7 @@
 package uk.ac.kent.fb224.mpchecker;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -24,7 +21,6 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
-import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -36,9 +32,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-
-public class MainActivity extends AppCompatActivity {
+public class MPActivity extends AppCompatActivity {
     private RecyclerView MPRecyclerView;
     private LinearLayoutManager layoutManager;
     private MPListAdapter adapter;
@@ -52,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.mp_layout);
         Toolbar toolbar = findViewById(R.id.MainToolbar);
         setSupportActionBar(toolbar);
 
@@ -61,15 +55,14 @@ public class MainActivity extends AppCompatActivity {
         mDrawerLayout.addDrawerListener(mToggle);
         mToggle.syncState();
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true); todo: fix
-        MenuBills = findViewById(R.id.MainBillButton);
-
-        MenuBills.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), BillActivity.class);
-                startActivity(intent);
-            }
-        });
+//        MenuBills = findViewById(R.id.MainBillButton);
+//        MenuBills.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(getApplicationContext(), BillActivity.class);
+//                startActivity(intent);
+//            }
+//        });todo: remove or uncomment depending on nav choices
         MPRecyclerView = (RecyclerView) findViewById(R.id.MPListView);
         layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -91,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
                         JSONObject Consti = JConList.getJSONObject(i);
 
                        conName = Consti.getString("name");
-//                        Log.d("con", conName);
+//                        Log.d("con", conName); todo remove debug
                         String MPURL = "https://www.theyworkforyou.com/api/getMP?constituency="+conName+"&key=DvbcgvFHgew2FECNnUCJ7frD&output=js";
                         GetMP(MPURL, conName);
                     }
@@ -174,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
                         String temp = MP.getString("image");
                         NewCon.MPImageUrl = "https://www.theyworkforyou.com" + temp;
                     }
-                    NetManager.getInstance(MainActivity.this).conList.add(NewCon);
+                    NetManager.getInstance(MPActivity.this).conList.add(NewCon);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

@@ -13,7 +13,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="uk.ac.kent.fb224.mpchecker.MainActivity">
+        tools:context="uk.ac.kent.fb224.mpchecker.MPActivity">
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/Constraint1"
@@ -44,7 +44,7 @@
 
             <include
                 android:id="@+id/include"
-                layout="@layout/main_nav_buttons"
+                layout="@layout/mp_nav_buttons"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"

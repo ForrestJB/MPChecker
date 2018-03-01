@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -27,7 +28,7 @@
             app:layout_constraintEnd_toStartOf="@+id/MPFavs"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/mainMPButton" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <Button
             android:id="@+id/MPFavs"
@@ -40,45 +41,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/MPAllMPs"
-            app:layout_constraintTop_toBottomOf="@+id/MainNewsButton" />
-
-        <Button
-            android:id="@+id/mainMPButton"
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:layout_width="0dp"
-            android:layout_height="45dp"
-            android:background="@color/colorPrimaryLight"
-            android:text="MP's"
-            android:textColor="@android:color/background_light"
-            app:layout_constraintEnd_toStartOf="@+id/MainBillButton"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <Button
-            android:id="@+id/MainBillButton"
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:layout_width="0dp"
-            android:layout_height="45dp"
-            android:background="@color/colorPrimary"
-            android:text="Bills"
-            android:textColor="@android:color/background_light"
-            app:layout_constraintEnd_toStartOf="@+id/MainNewsButton"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/mainMPButton"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <Button
-            android:id="@+id/MainNewsButton"
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:layout_width="0dp"
-            android:layout_height="45dp"
-            android:background="@color/colorPrimary"
-            android:text="News"
-            android:textColor="@android:color/background_light"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/MainBillButton"
             app:layout_constraintTop_toTopOf="parent" />
 
     </android.support.constraint.ConstraintLayout>

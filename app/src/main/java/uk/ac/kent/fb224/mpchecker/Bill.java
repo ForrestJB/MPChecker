@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 public class Bill {
     String Desc;
+    String Date;
     String Name;
     String Result;
     int Ayes;
@@ -34,4 +35,5 @@ public class Bill {
     int DUPAyes=0;
     int DUPNoes=0;
     int DUPAbstains=0;
+    //todo: can the above be changed for a list of "vote" objects that hold the details of who, what party, and what kind of vote?
 }
