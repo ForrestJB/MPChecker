@@ -1,6 +1,7 @@
 package uk.ac.kent.fb224.mpchecker;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.support.design.widget.FloatingActionButton;
@@ -22,7 +23,6 @@ import java.util.ArrayList;
 
 public class MPListAdapter extends RecyclerView.Adapter<MPListAdapter.ViewHolder> {
     ImageView MPPartyColour;
-
     @Override
     public void setHasStableIds(boolean hasStableIds) {
         super.setHasStableIds(hasStableIds);
@@ -37,6 +37,15 @@ public class MPListAdapter extends RecyclerView.Adapter<MPListAdapter.ViewHolder
         TextView MPRole;
         FloatingActionButton FavButton;
 
+        private View.OnClickListener onClick = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {//onclick to open MP profile page when a card is clicked
+                int position = ViewHolder.this.getLayoutPosition();
+                Intent intent = new Intent(view.getContext(), MPDetails.class);
+                intent.putExtra("MP_POSITION", position);
+                context.startActivity(intent);
+            }
+        };
         public ViewHolder(View itemView) {
             super(itemView);
             MPThumb = itemView.findViewById(R.id.MPThumb);
@@ -46,7 +55,7 @@ public class MPListAdapter extends RecyclerView.Adapter<MPListAdapter.ViewHolder
             MPConName = itemView.findViewById(R.id.MPConName);
             MPRole = itemView.findViewById(R.id.MPRole);
             FavButton = itemView.findViewById(R.id.MPFav);
-
+            this.itemView.setOnClickListener(onClick);
             FavButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) { // handle what to do when the Favourite button is pressed

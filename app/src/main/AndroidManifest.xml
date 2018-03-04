@@ -25,6 +25,8 @@
         <activity android:name=".MPActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden"/>
+        <activity android:name=".MPDetails"
+            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar" />
     </application>
 
 </manifest>
