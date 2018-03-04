@@ -4,6 +4,7 @@
 //        String test = "http://data.parliament.uk/resources/752025";
 //        String testparse =test.substring(36);
 //        Log.d("url parse", testparse);
+//URL FORMAT FOR PARLIAMENT RESOURCES!!!!: http://api.data.parliament.uk/resources/files/754404.xml
 
 package uk.ac.kent.fb224.mpchecker;
 
@@ -47,8 +48,6 @@ public class MPActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mp_layout);
-        Toolbar toolbar = findViewById(R.id.MainToolbar);
-        setSupportActionBar(toolbar);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close);

@@ -22,14 +22,30 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
-            <include
-                android:id="@+id/include"
-                layout="@layout/main_toolbar"
+            <android.widget.Toolbar
+                android:id="@+id/mainToolbar"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
+                android:background="#00563B"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"></include>
+                app:layout_constraintTop_toTopOf="parent">
+
+                <EditText
+                    android:id="@+id/MPSearch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:drawableLeft="@drawable/ic_search_black_24dp"
+                    android:drawableTint="?android:attr/textColorHint"
+                    android:hint="Search MP's"
+                    android:minWidth="150dp"
+                    android:textColor="@android:color/background_light"
+                    android:textColorHint="?android:attr/textColorPrimaryInverse"
+                    android:textStyle="bold"
+                    tools:layout_editor_absoluteX="117dp" />
+            </android.widget.Toolbar>
+
         </android.support.constraint.ConstraintLayout>
 
         <android.support.constraint.ConstraintLayout
