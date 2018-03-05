@@ -20,10 +20,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".BillActivity"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar"
             android:windowSoftInputMode="stateHidden"/>
         <activity android:name=".MPActivity"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar"
             android:windowSoftInputMode="stateHidden"/>
         <activity android:name=".MPDetails"
             android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar" />

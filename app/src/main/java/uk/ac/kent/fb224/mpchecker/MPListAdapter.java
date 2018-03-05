@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.util.SortedList;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,6 +24,7 @@ import java.util.ArrayList;
 
 public class MPListAdapter extends RecyclerView.Adapter<MPListAdapter.ViewHolder> {
     ImageView MPPartyColour;
+    private Context context;
     @Override
     public void setHasStableIds(boolean hasStableIds) {
         super.setHasStableIds(hasStableIds);
@@ -78,10 +80,10 @@ public class MPListAdapter extends RecyclerView.Adapter<MPListAdapter.ViewHolder
             });
         }
     }
-private Context context;
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.mp_card_layout, parent, false);
+        context = parent.getContext();
+        View v = LayoutInflater.from(context).inflate(R.layout.mp_card_layout, parent, false);
         MPListAdapter.ViewHolder vh = new MPListAdapter.ViewHolder(v);
         return vh;
     }
@@ -116,7 +118,7 @@ private Context context;
             MPPartyColour.setBackgroundColor(Color.rgb(212,106,76));
         }
         holder.MPRole.setText(con.MPRole);
-//        holder.MPThumb.setImageUrl(con.MPImageUrl, NetManager.getInstance(context).imageLoader); todo: reimplement MP thumbs (removed for optimnisation while testing)
+        holder.MPThumb.setImageUrl(con.MPImageUrl, NetManager.getInstance(context).imageLoader);
         if (con.isFav == true){
             holder.FavButton.setColorFilter(Color.rgb(218, 165, 32));
         }

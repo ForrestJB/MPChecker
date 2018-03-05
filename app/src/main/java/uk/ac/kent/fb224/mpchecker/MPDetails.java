@@ -50,7 +50,7 @@ public class MPDetails extends AppCompatActivity {
 
         Intent intent = getIntent();
         MPPosition = intent.getIntExtra("MP_POSITION", 0);
-        MP = NetManager.getInstance(this).conList.get(MPPosition);
+        MP = NetManager.getInstance(this).DetailsConList.get(MPPosition);
 
         Image = findViewById(R.id.MPDetailsImage);
         Name = findViewById(R.id.MPDetailsName);
@@ -66,8 +66,9 @@ public class MPDetails extends AppCompatActivity {
         Role.setText(MP.MPRole);
         Party.setText(MP.Party);
         final NetManager NetMgr = NetManager.getInstance(getApplicationContext());
-        NetMgr.imageLoader.get(MP.MPImageUrl, imageListener1);//setup NetManager object, fetch MP image
-
+        if (MP.MPImageUrl != null) {//check to ensure there is an image to prevent crashes if the URL is null
+            NetMgr.imageLoader.get(MP.MPImageUrl, imageListener1);//setup NetManager object, fetch MP image
+        }
     }
 }
 

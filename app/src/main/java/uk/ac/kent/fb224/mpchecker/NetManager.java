@@ -20,6 +20,7 @@ public class NetManager {
     public RequestQueue requestQueue;
     static ArrayList<Constituency> conList = new ArrayList<Constituency>();
     static ArrayList<Constituency> conFavList = new ArrayList<Constituency>();
+    static ArrayList<Constituency> DetailsConList = new ArrayList<Constituency>();
     static ArrayList<Bill> BillList = new ArrayList<Bill>();
     public ImageLoader imageLoader;
 
