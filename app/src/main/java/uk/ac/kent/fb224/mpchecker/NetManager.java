@@ -22,6 +22,8 @@ public class NetManager {
     static ArrayList<Constituency> conFavList = new ArrayList<Constituency>();
     static ArrayList<Constituency> DetailsConList = new ArrayList<Constituency>();
     static ArrayList<Bill> BillList = new ArrayList<Bill>();
+    static ArrayList<Bill> StaticBillList = new ArrayList<Bill>();
+
     public ImageLoader imageLoader;
 
     private ImageLoader.ImageCache imageCache = new ImageLoader.ImageCache() {

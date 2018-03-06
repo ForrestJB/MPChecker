@@ -16,44 +16,12 @@
         tools:context="uk.ac.kent.fb224.mpchecker.MPActivity">
 
         <android.support.constraint.ConstraintLayout
-            android:id="@+id/Constraint1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
-
-            <android.widget.Toolbar
-                android:id="@+id/mainToolbar2"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:background="#00563B"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <EditText
-                    android:id="@+id/BillSearch"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:drawableLeft="@drawable/ic_search_black_24dp"
-                    android:drawableTint="?android:attr/textColorHint"
-                    android:hint="Search Bill's"
-                    android:minWidth="150dp"
-                    android:textColor="@android:color/background_light"
-                    android:textColorHint="?android:attr/textColorPrimaryInverse"
-                    android:textStyle="bold"
-                    tools:layout_editor_absoluteX="117dp" />
-            </android.widget.Toolbar>
-        </android.support.constraint.ConstraintLayout>
-
-        <android.support.constraint.ConstraintLayout
             android:id="@+id/constraintLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/Constraint1">
+            app:layout_constraintTop_toTopOf="parent">
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/BillListView"
@@ -65,12 +33,49 @@
                 app:layout_constraintTop_toTopOf="parent">
 
             </android.support.v7.widget.RecyclerView>
+
+            <ImageView
+                android:id="@+id/BillLoadMask"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/constraintLayout"
+                app:srcCompat="@color/cardview_light_background" />
+
+            <ProgressBar
+                android:id="@+id/BillLoadSpinner"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="200dp"
+                android:layout_marginEnd="170dp"
+                android:layout_marginStart="170dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintBottom_toBottomOf="@+id/MPLoadMask"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/MPLoadMask"
+                app:layout_constraintTop_toTopOf="@+id/constraintLayout"
+                app:layout_constraintVertical_bias="0.48000002" />
+
+            <TextView
+                android:id="@+id/BillLoadText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:text="Loading Bills, Please Wait..."
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/BillLoadSpinner" />
+
         </android.support.constraint.ConstraintLayout>
 
     </android.support.constraint.ConstraintLayout>
 
     <android.support.design.widget.NavigationView
-        android:id="@+id/nav_view"
+        android:id="@+id/BillView"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
