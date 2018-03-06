@@ -7,6 +7,7 @@ import java.util.ArrayList;
  */
 
 public class Bill {
+    String ID;
     String Desc;
     String Date;
     String Name;

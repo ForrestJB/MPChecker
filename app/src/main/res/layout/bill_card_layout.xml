@@ -19,7 +19,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
-                android:text="Middle Level Bill: Report Stage Amdt 14"
+                android:maxLength="52"
                 android:textColor="@android:color/background_dark"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -29,7 +29,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="Wed, Feb 02 2018"
                 app:layout_constraintStart_toStartOf="@+id/BillName"
                 app:layout_constraintTop_toBottomOf="@+id/BillName" />
 
@@ -39,7 +38,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:layout_marginTop="4dp"
-                android:text="Ayes: 255"
                 android:textColor="@android:color/background_dark"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/BillDate"
@@ -52,7 +50,6 @@
                 android:layout_marginBottom="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="4dp"
-                android:text="Noes: 154"
                 android:textColor="@android:color/background_dark"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/BillAyes"

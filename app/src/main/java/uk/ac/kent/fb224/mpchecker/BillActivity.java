@@ -83,6 +83,8 @@ public class BillActivity extends AppCompatActivity {
         adapter = new BillListAdapter();
         BillRecyclerView.setAdapter(adapter);
         adapter.BillList = NetManager.getInstance(this).BillList;
+        NetManager.getInstance(this).BillList = null;       //these lines are int to prevent duplicate appearing
+        NetManager.getInstance(this).StaticBillList = null; //when closing and reopening the bills browse page
         NetManager NetMgr = NetManager.getInstance(getApplicationContext());
         RequestQueue requestQueue = NetMgr.requestQueue;
         BillURL = "http://lda.data.parliament.uk/commonsdivisions.json?_view=Commons+Divisions&_pageSize=30&_page=0";
@@ -112,7 +114,7 @@ public class BillActivity extends AppCompatActivity {
         });
         requestQueue.add(request);
     }
-    public void GetVoteResult (String id){
+    public void GetVoteResult (final String id){
         NetManager NetMgr = NetManager.getInstance(getApplicationContext());
         RequestQueue requestQueue = NetMgr.requestQueue;//fetch the request queue
         String URL = "http://lda.data.parliament.uk/commonsdivisions/id/"+id+".json";
@@ -120,6 +122,7 @@ public class BillActivity extends AppCompatActivity {
             @Override
             public void onResponse(JSONObject response) {
                 final Bill NewBill = new Bill();
+                NewBill.ID = id;
                 try {
                     JSONObject result = response.getJSONObject("result");
                     JSONObject PrimTopic = result.getJSONObject("primaryTopic");
@@ -151,18 +154,8 @@ public class BillActivity extends AppCompatActivity {
                     JSONObject Dateobj = PrimTopic.getJSONObject("date");
                     NewBill.Date = Dateobj.getString("_value");
                     Log.d("title", NewBill.Name);
-                    JSONArray Votes = PrimTopic.getJSONArray("vote");
-//                    for(int i=0; i < Votes.length(); i++){
-//                        JSONObject Member = Votes.getJSONObject(i);
-//                        String VoteParty = Member.getString("memberParty");
-//                        Log.d("party", VoteParty);
-//                        JSONObject Memberobj = Member.getJSONObject("memberPrinted");
-//                        String MemberName = Memberobj.getString("_value");
-//                        Log.d("MP name", MemberName);
-//                        String VoteCont = Member.getString("type");
-//                        String vote = VoteCont.substring(38);
-//                        Log.d("vote", vote);
-//                        //todo itemised votes
+
+//
                     Counter++;
                     if(Counter == 30){
                         MaskText = findViewById(R.id.BillLoadText);
@@ -240,6 +233,44 @@ public class BillActivity extends AppCompatActivity {
         adapter.BillList = FilteredList;
         NetManager.getInstance(BillActivity.this).BillList = FilteredList;
         adapter.notifyDataSetChanged();
+    }
+    public ArrayList GetVotes(JSONObject main, String url){
+        final ArrayList<Vote> VoteList = new ArrayList<Vote>();
+        NetManager NetMgr = NetManager.getInstance(getApplicationContext());
+        RequestQueue requestQueue = NetMgr.requestQueue;//fetch the request queue
+        JsonObjectRequest request3 = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                JSONObject result = null;
+                try {
+                    result = response.getJSONObject("result");
+                    JSONObject main = result.getJSONObject("primaryTopic");
+                    JSONArray Votes = main.getJSONArray("vote");
+                    for(int i=0; i < Votes.length(); i++){
+                        final Vote vote = new Vote();
+                        JSONObject Member = Votes.getJSONObject(i);
+                        String VoteParty = Member.getString("memberParty");
+                        Log.d("party", VoteParty);
+                        JSONObject Memberobj = Member.getJSONObject("memberPrinted");
+                        String MemberName = Memberobj.getString("_value");
+                        Log.d("MP name", MemberName);
+                        String VoteCont = Member.getString("type");
+                        String VoteResult = VoteCont.substring(38);
+                        Log.d("vote", VoteResult);
+                        VoteList.add(vote);
+                }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+           //todo error response
+            }
+        });
+        return  VoteList;
     }
 }
 

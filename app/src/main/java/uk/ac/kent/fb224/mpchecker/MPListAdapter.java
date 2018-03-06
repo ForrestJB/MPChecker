@@ -117,6 +117,12 @@ public class MPListAdapter extends RecyclerView.Adapter<MPListAdapter.ViewHolder
         else if (con.Party.equals("DUP")){
             MPPartyColour.setBackgroundColor(Color.rgb(212,106,76));
         }
+        else if (con.Party.equals("Sinn Féin")){
+            MPPartyColour.setBackgroundColor(Color.rgb(0,136,0));
+        }
+        else if (con.Party.equals("Speaker")){
+            MPPartyColour.setBackgroundColor(Color.rgb(0,0,0));
+        }
         holder.MPRole.setText(con.MPRole);
         holder.MPThumb.setImageUrl(con.MPImageUrl, NetManager.getInstance(context).imageLoader);
         if (con.isFav == true){

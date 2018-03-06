@@ -5,7 +5,7 @@ package uk.ac.kent.fb224.mpchecker;
  */
 
 public class Vote extends Bill {
-    String MPName;
+    String Name;
     String Party;
     boolean Aye = false;
     boolean Noe = false;
