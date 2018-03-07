@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.util.Log;
 import android.view.View;
@@ -35,6 +37,10 @@ import static android.provider.ContactsContract.CommonDataKinds.Website.URL;
  */
 
 public class MPDetails extends AppCompatActivity {
+    private RecyclerView BillRecyclerView;
+    private RecyclerView MPRecyclerView;
+    private LinearLayoutManager layoutManager;
+    private MPDetailsBillAdapter adapter;
     public ImageLoader.ImageContainer GetBit;
     public ImageView Image;
     public TextView Name;
@@ -51,6 +57,7 @@ public class MPDetails extends AppCompatActivity {
         @Override
         public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {//
             if (response.getBitmap() !=null){
+
                 Image.setImageBitmap(response.getBitmap());
             }
         }
@@ -84,12 +91,19 @@ public class MPDetails extends AppCompatActivity {
         Con.setText(MP.ConName);
         Role.setText(MP.MPRole);
         Party.setText(MP.Party);
+        BillRecyclerView = (RecyclerView) findViewById(R.id.MPDetailsRecycler);
+        layoutManager = new LinearLayoutManager(this);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        BillRecyclerView.setLayoutManager(layoutManager);
+        adapter = new MPDetailsBillAdapter();
+        adapter.BillList = NetManager.getInstance(this).MPDetailsBillList;
+        BillRecyclerView.setAdapter(adapter);
         final NetManager NetMgr = NetManager.getInstance(getApplicationContext());
         if (MP.MPImageUrl != null) {//check to ensure there is an image to prevent crashes if the URL is null
             NetMgr.imageLoader.get(MP.MPImageUrl, imageListener1);//setup NetManager object, fetch MP image
         }
         RequestQueue requestQueue = NetMgr.requestQueue;//fetch the request queue
-        String WikiURL = "https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exintro&titles="+MP.MPName+"&format=json";
+        String WikiURL = "https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exintro&titles=" + MP.MPName + "&format=json";
         WikiURL = WikiURL.replaceAll(" ", "%20");
         Log.d("URL", WikiURL);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, WikiURL, null,
@@ -100,8 +114,8 @@ public class MPDetails extends AppCompatActivity {
                             JSONObject query = response.getJSONObject("query");
                             JSONObject pages = query.getJSONObject("pages");
                             Iterator iterator = pages.keys();
-                            while(iterator.hasNext()){
-                                String key = (String)iterator.next();
+                            while (iterator.hasNext()) {
+                                String key = (String) iterator.next();
                                 JSONObject page = pages.getJSONObject(key);
                                 String Extract = page.getString("extract");
                                 Log.d("bio", Extract);
@@ -123,6 +137,7 @@ public class MPDetails extends AppCompatActivity {
         requestQueue.add(request);
         getBills();
     }
+
     public String stripHtml(String html) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
             return Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY).toString();
@@ -130,7 +145,8 @@ public class MPDetails extends AppCompatActivity {
             return Html.fromHtml(html).toString();
         }
     }
-    public void getBills(){
+
+    public void getBills() {
         String BillID = null;
         NetManager NetMgr = NetManager.getInstance(getApplicationContext());
         RequestQueue requestQueue = NetMgr.requestQueue;
@@ -141,11 +157,12 @@ public class MPDetails extends AppCompatActivity {
                 try {
                     JSONObject result = response.getJSONObject("result");
                     JSONArray items = result.getJSONArray("items");
-                    for(int i=0; i < items.length(); i++){
+                    for (int i = 0; i < items.length(); i++) {
                         JSONObject vote = items.getJSONObject(i);
 
                         String VoteURL = vote.getString("_about");
                         String BillID = VoteURL.substring(36);
+                        getVotes(BillID);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -158,55 +175,64 @@ public class MPDetails extends AppCompatActivity {
             }
         });
         requestQueue.add(request);
-        final String finalBillID = BillID;
-        JsonObjectRequest request2 = new JsonObjectRequest(Request.Method.GET, URL, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                final Bill NewBill = new Bill();
-                NewBill.ID = finalBillID;
-                try {
-                    JSONObject result = response.getJSONObject("result");
-                    JSONObject PrimTopic = result.getJSONObject("primaryTopic");
-                    JSONArray AbstainArray = PrimTopic.getJSONArray("AbstainCount");
-                    int AbstainCount = 0;
-                    for (int i = 0; i < AbstainArray.length(); i++) {
-                        JSONObject AbCont = AbstainArray.getJSONObject(i);
-                        AbstainCount = AbCont.getInt("_value");
-                        Log.d("abstains", Integer.toString(AbstainCount));
+    }
+        public void getVotes(String BillID){
+            NetManager NetMgr = NetManager.getInstance(getApplicationContext());
+            RequestQueue requestQueue = NetMgr.requestQueue;
+            String BillURL = "http://lda.data.parliament.uk/commonsdivisions/id/"+BillID+".json";
+            final String finalBillID = BillID;
+            JsonObjectRequest request2 = new JsonObjectRequest(Request.Method.GET, BillURL, null, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    final Bill NewBill = new Bill();
+                    NewBill.ID = finalBillID;
+                    try {
+                        JSONObject result = response.getJSONObject("result");
+                        JSONObject PrimTopic = result.getJSONObject("primaryTopic");
+                        JSONArray AbstainArray = PrimTopic.getJSONArray("AbstainCount");
+                        int AbstainCount = 0;
+                        for (int i = 0; i < AbstainArray.length(); i++) {
+                            JSONObject AbCont = AbstainArray.getJSONObject(i);
+                            AbstainCount = AbCont.getInt("_value");
+                            Log.d("abstains", Integer.toString(AbstainCount));
+                        }
+                        JSONArray AyeArray = PrimTopic.getJSONArray("AyesCount");
+                        int AyeCount = 0;
+                        for (int i = 0; i < AyeArray.length(); i++) {
+                            JSONObject AyeCont = AyeArray.getJSONObject(i);
+                            AyeCount = AyeCont.getInt("_value");
+                            Log.d("Ayes", Integer.toString(AyeCount));
+                        }
+                        JSONArray NoeArray = PrimTopic.getJSONArray("Noesvotecount");
+                        int NoeCount = 0;
+                        for (int i = 0; i < NoeArray.length(); i++) {
+                            JSONObject NoeCont = NoeArray.getJSONObject(i);
+                            NoeCount = NoeCont.getInt("_value");
+                            Log.d("Noes", Integer.toString(NoeCount));
+                        }
+                        NewBill.Abstains = AbstainCount;
+                        NewBill.Ayes = AyeCount;
+                        NewBill.Noes = NoeCount;
+                        NewBill.Name = PrimTopic.getString("title");
+                        JSONObject Dateobj = PrimTopic.getJSONObject("date");
+                        NewBill.Date = Dateobj.getString("_value");
+                        Log.d("title", NewBill.Name);
+                        NetManager.getInstance(MPDetails.this).MPDetailsBillList.add(NewBill);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                    JSONArray AyeArray = PrimTopic.getJSONArray("AyesCount");
-                    int AyeCount = 0;
-                    for (int i = 0; i < AyeArray.length(); i++) {
-                        JSONObject AyeCont = AyeArray.getJSONObject(i);
-                        AyeCount = AyeCont.getInt("_value");
-                        Log.d("Ayes", Integer.toString(AyeCount));
-                    }
-                    JSONArray NoeArray = PrimTopic.getJSONArray("Noesvotecount");
-                    int NoeCount = 0;
-                    for (int i = 0; i < NoeArray.length(); i++) {
-                        JSONObject NoeCont = NoeArray.getJSONObject(i);
-                        NoeCount = NoeCont.getInt("_value");
-                        Log.d("Noes", Integer.toString(NoeCount));
-                    }
-                    NewBill.Abstains = AbstainCount;
-                    NewBill.Ayes = AyeCount;
-                    NewBill.Noes = NoeCount;
-                    NewBill.Name = PrimTopic.getString("title");
-                    JSONObject Dateobj = PrimTopic.getJSONObject("date");
-                    NewBill.Date = Dateobj.getString("_value");
-                    Log.d("title", NewBill.Name);
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                    adapter.notifyDataSetChanged();
                 }
-    }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(), "Network error, please check your internet connection", Toast.LENGTH_LONG).show();//if there is a reponse error, notify the user
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(getApplicationContext(), "Network error, please check your internet connection", Toast.LENGTH_LONG).show();//if there is a reponse error, notify the user
 
-            }
-        });
-        requestQueue.add(request2);
-    }
+                }
+            });
+            requestQueue.add(request2);
+        }
+
+
 }
 

@@ -83,8 +83,8 @@ public class BillActivity extends AppCompatActivity {
         adapter = new BillListAdapter();
         BillRecyclerView.setAdapter(adapter);
         adapter.BillList = NetManager.getInstance(this).BillList;
-        NetManager.getInstance(this).BillList = null;       //these lines are int to prevent duplicate appearing
-        NetManager.getInstance(this).StaticBillList = null; //when closing and reopening the bills browse page
+        NetManager.getInstance(this).BillList.clear();       //these lines are in to prevent duplicates appearing
+        NetManager.getInstance(this).StaticBillList.clear(); //when closing and reopening the bills browse page
         NetManager NetMgr = NetManager.getInstance(getApplicationContext());
         RequestQueue requestQueue = NetMgr.requestQueue;
         BillURL = "http://lda.data.parliament.uk/commonsdivisions.json?_view=Commons+Divisions&_pageSize=30&_page=0";
@@ -155,7 +155,6 @@ public class BillActivity extends AppCompatActivity {
                     NewBill.Date = Dateobj.getString("_value");
                     Log.d("title", NewBill.Name);
 
-//
                     Counter++;
                     if(Counter == 30){
                         MaskText = findViewById(R.id.BillLoadText);
@@ -167,7 +166,7 @@ public class BillActivity extends AppCompatActivity {
                     }
                     NetManager.getInstance(BillActivity.this).BillList.add(NewBill);
                     NetManager.getInstance(BillActivity.this).StaticBillList.add(NewBill);
-//                    }
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

@@ -13,15 +13,13 @@ import java.util.ArrayList;
 import java.util.Date;
 
 /**
- * Created by Tree1 on 23/02/2018.
+ * Created by Forrest on 07/03/2018.
  */
 
-public class BillListAdapter extends RecyclerView.Adapter<BillListAdapter.ViewHolder> {
+public class MPDetailsBillAdapter extends RecyclerView.Adapter<MPDetailsBillAdapter.ViewHolder> {
     private Context context;
     public ArrayList<Bill> BillList = new ArrayList<Bill>();
-
     public class ViewHolder extends RecyclerView.ViewHolder{
-
         public TextView Title;
         public TextView Date;
         public TextView Ayes;
@@ -35,20 +33,21 @@ public class BillListAdapter extends RecyclerView.Adapter<BillListAdapter.ViewHo
         };
         public ViewHolder(View itemView) {
             super(itemView);
-            Title = itemView.findViewById(R.id.BillName);
-            Date = itemView.findViewById(R.id.BillDate);
-            Ayes = itemView.findViewById(R.id.BillAyes);
-            Noes = itemView.findViewById(R.id.BillNoes);
+            Title = itemView.findViewById(R.id.MPDBillName);
+            Date = itemView.findViewById(R.id.MPDBillDate);
+            Ayes = itemView.findViewById(R.id.MPDBillAyes);
+            Noes = itemView.findViewById(R.id.MPDBillNoes);
             this.itemView.setOnClickListener(onClick);
         }
     }
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.bill_card_layout, parent, false);
-        BillListAdapter.ViewHolder vh = new BillListAdapter.ViewHolder(v);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.mp_details_bill_card_layout, parent, false);
+        MPDetailsBillAdapter.ViewHolder vh = new ViewHolder(v);
         return vh;
     }
 
-    public void onBindViewHolder(ViewHolder holder, int position) {
+
+    public void onBindViewHolder(MPDetailsBillAdapter.ViewHolder holder, int position) {
         Bill bill = BillList.get(position);
         holder.Title.setText(bill.Name);
         holder.Ayes.setText("Ayes: "+bill.Ayes);
@@ -64,10 +63,9 @@ public class BillListAdapter extends RecyclerView.Adapter<BillListAdapter.ViewHo
 
     }
 
-
-
     @Override
     public int getItemCount() {
         return BillList.size();
     }
 }
+

@@ -23,6 +23,7 @@ public class NetManager {
     static ArrayList<Constituency> DetailsConList = new ArrayList<Constituency>();
     static ArrayList<Bill> BillList = new ArrayList<Bill>();
     static ArrayList<Bill> StaticBillList = new ArrayList<Bill>();
+    static ArrayList<Bill> MPDetailsBillList = new ArrayList<Bill>();
 
     public ImageLoader imageLoader;
 
