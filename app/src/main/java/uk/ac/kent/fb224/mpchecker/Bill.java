@@ -12,6 +12,7 @@ public class Bill {
     String Date;
     String Name;
     String Result;
+    String MPVote;
     int Ayes;
     int Noes;
     int Abstains;

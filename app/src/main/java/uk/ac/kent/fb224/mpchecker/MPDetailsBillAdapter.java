@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -24,7 +26,7 @@ public class MPDetailsBillAdapter extends RecyclerView.Adapter<MPDetailsBillAdap
         public TextView Date;
         public TextView Ayes;
         public TextView Noes;
-
+        public TextView MPVote;
         private View.OnClickListener onClick = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -37,6 +39,7 @@ public class MPDetailsBillAdapter extends RecyclerView.Adapter<MPDetailsBillAdap
             Date = itemView.findViewById(R.id.MPDBillDate);
             Ayes = itemView.findViewById(R.id.MPDBillAyes);
             Noes = itemView.findViewById(R.id.MPDBillNoes);
+            MPVote = itemView.findViewById(R.id.MPDVote);
             this.itemView.setOnClickListener(onClick);
         }
     }
@@ -57,6 +60,15 @@ public class MPDetailsBillAdapter extends RecyclerView.Adapter<MPDetailsBillAdap
             SimpleDateFormat formatter = new SimpleDateFormat("E, MMM dd yyyy");
             String ParsedDate = formatter.format(df);
             holder.Date.setText(ParsedDate);
+            if(bill.MPVote != null){
+                if(bill.MPVote.equals("AyeVote")){
+                    holder.MPVote.setText("Aye");
+                }
+                else if(bill.MPVote.equals("NoVote")){
+                    holder.MPVote.setText("No");
+                }
+            }
+            else{ holder.MPVote.setText("Abstain");}
         } catch (ParseException e) {
             e.printStackTrace();
         }
