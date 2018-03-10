@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 26
     defaultConfig {
-        applicationId "uk.ac.kent.fb224.mpchecker"
+        applicationId "uk.ac.kent.FJB.mpchecker"
         minSdkVersion 22
         targetSdkVersion 26
         versionCode 1
@@ -29,4 +29,7 @@ dependencies {
     implementation 'com.android.support:cardview-v7:26.1.0'
     compile 'com.android.volley:volley:1.0.0'
     compile 'de.hdodenhof:circleimageview:2.2.0'
+    compile 'com.google.firebase:firebase-core:11.8.0'
+    compile 'com.google.firebase:firebase-database:11.8.0'
 }
+apply plugin: 'com.google.gms.google-services'

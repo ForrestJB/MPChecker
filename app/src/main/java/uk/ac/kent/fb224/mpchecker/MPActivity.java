@@ -35,6 +35,11 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -44,6 +49,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MPActivity extends AppCompatActivity {
+    private DatabaseReference mDatabase;
+    private DatabaseReference mMPReference;
     private RecyclerView MPRecyclerView;
     private LinearLayoutManager layoutManager;
     private MPListAdapter adapter;
@@ -56,12 +63,15 @@ public class MPActivity extends AppCompatActivity {
     private ProgressBar MaskSpinner;
     private TextView MaskText;
     private Boolean IsFavOpen = false;
+    public Election election;
+    int j = 0;
     public int counter = 0;//this is for removing the loading mask when all MPs have been loaded from the JSON
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mp_layout);
 
+        mDatabase = FirebaseDatabase.getInstance().getReference(); // get a Reference for the current database
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close);
         mDrawerLayout.addDrawerListener(mToggle);
@@ -89,35 +99,35 @@ public class MPActivity extends AppCompatActivity {
         NetManager NetMgr = NetManager.getInstance(getApplicationContext());
         RequestQueue requestQueue = NetMgr.requestQueue;//fetch the request queue
         Conurl = "https://www.theyworkforyou.com/api/getConstituencies?key=DvbcgvFHgew2FECNnUCJ7frD&output=js";
-        StringRequest request = new StringRequest(Request.Method.GET, Conurl, // this volley request fetches the name of all current UK Constituencies
-            new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                try {
-                    JSONArray JConList = new JSONArray(response);
-                    for(int i=0; i < JConList.length(); i++){
-                        String conName;
-                        JSONObject Consti = JConList.getJSONObject(i);
-
-                       conName = Consti.getString("name");
-//                        Log.d("con", conName); todo remove debug
-                        String MPURL = "https://www.theyworkforyou.com/api/getMP?constituency="+conName+"&key=DvbcgvFHgew2FECNnUCJ7frD&output=js";
-                        GetMP(MPURL, conName);
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                adapter.notifyDataSetChanged();
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d("no", "no response");
-                //todo: error response
-            }
-        }
-    );
-        requestQueue.add(request);
+//        StringRequest request = new StringRequest(Request.Method.GET, Conurl, // this volley request fetches the name of all current UK Constituencies todo remove this or keep?
+//            new Response.Listener<String>() {
+//            @Override
+//            public void onResponse(String response) {
+//                try {
+//                    JSONArray JConList = new JSONArray(response);
+//                    for(int i=0; i < JConList.length(); i++){
+//                        String conName;
+//                        JSONObject Consti = JConList.getJSONObject(i);
+//
+//                       conName = Consti.getString("name");
+////                        Log.d("con", conName); todo remove debug
+//                        String MPURL = "https://www.theyworkforyou.com/api/getMP?constituency="+conName+"&key=DvbcgvFHgew2FECNnUCJ7frD&output=js";
+////                        GetMP(MPURL, conName);
+//                    }
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//                adapter.notifyDataSetChanged();
+//            }
+//        }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                Log.d("no", "no response");
+//                //todo: error response
+//            }
+//        }
+//    );
+//        requestQueue.add(request);
 
 
         MPFavs = findViewById(R.id.MPFavs);
@@ -146,7 +156,32 @@ public class MPActivity extends AppCompatActivity {
                 Log.d("AllMps", "button pressed"); // Todo remove debug
             }
         });
+        for(int k=0;k<=649;k++) {
+        mMPReference = FirebaseDatabase.getInstance().getReference().child("Raw Data").child("MP").child(Integer.toString(k));
+        ValueEventListener MPListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                final Constituency NewCon = dataSnapshot.getValue(Constituency.class);
+                NetManager.getInstance(MPActivity.this).conList.add(NewCon);
+                j++;
+                adapter.notifyDataSetChanged();
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
+            }
+        };
+        mMPReference.addValueEventListener(MPListener);
+        if(k==649){
+            MaskText = findViewById(R.id.MPLoadText);
+            MaskImage = findViewById(R.id.MPLoadMask);
+            MaskSpinner = findViewById(R.id.MPLoadMaskSpinner);
+            MaskImage.setVisibility(View.GONE);
+            MaskSpinner.setVisibility(View.GONE);
+            MaskText.setVisibility(View.GONE);
+        }
+    }
+        adapter.notifyDataSetChanged();
     }
 public void addTextListener(String query){
                 query = query.toString().toLowerCase();
@@ -207,45 +242,49 @@ public void addTextListener(String query){
         }
         return super.onOptionsItemSelected(item);
     }
-    public void GetMP(String URL, final String conName){
-        NetManager NetMgr = NetManager.getInstance(getApplicationContext());
-        RequestQueue requestQueue = NetMgr.requestQueue;//fetch the request queue
-        StringRequest request2 = new StringRequest(Request.Method.GET, URL,
-        new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response2) {
-                final Constituency NewCon = new Constituency();
-                try {
-                    JSONObject MP = new JSONObject(response2);
-                    NewCon.ConName = conName;
-                    NewCon.MPName = MP.getString("full_name");
-                    NewCon.Party = MP.getString("party");
-                    if (MP.has("image")) {
-                        String temp = MP.getString("image");
-                        NewCon.MPImageUrl = "https://www.theyworkforyou.com" + temp;
-                    }
-                    NetManager.getInstance(MPActivity.this).conList.add(NewCon);
-                    counter++;
-                    if(counter == 649){
-                        MaskText = findViewById(R.id.MPLoadText);
-                        MaskImage = findViewById(R.id.MPLoadMask);
-                        MaskSpinner = findViewById(R.id.MPLoadMaskSpinner);
-                        MaskImage.setVisibility(View.GONE);
-                        MaskSpinner.setVisibility(View.GONE);
-                        MaskText.setVisibility(View.GONE);
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                adapter.notifyDataSetChanged();
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d("MP", "MP Net Error");
-            }
-        }
-    );
-        requestQueue.add(request2);
-    }
+//    public void GetMP(String URL, final String conName){ todo now redundant, remove?
+//        NetManager NetMgr = NetManager.getInstance(getApplicationContext());
+//        RequestQueue requestQueue = NetMgr.requestQueue;//fetch the request queue
+//        StringRequest request2 = new StringRequest(Request.Method.GET, URL,
+//        new Response.Listener<String>() {
+//            @Override
+//            public void onResponse(String response2) {
+//                final Constituency NewCon = new Constituency();
+//                try {
+//                    JSONObject MP = new JSONObject(response2);
+//                    NewCon.ConName = conName;
+//                    NewCon.MPName = MP.getString("full_name");
+//                    NewCon.Party = MP.getString("party");
+//                    if(MP.has("position")){
+//                        NewCon.MPRole = MP.getString("position");
+//                        mDatabase.child("Raw Data").child("MP").child(Integer.toString(counter)).child("MPRole").setValue(NewCon.MPRole);
+//                    }
+//                    if (MP.has("image")) {
+//                        String temp = MP.getString("image");
+//                        NewCon.MPImageUrl = "https://www.theyworkforyou.com" + temp;
+//                        mDatabase.child("Raw Data").child("MP").child(Integer.toString(counter)).child("MPImageUrl").setValue(NewCon.MPImageUrl);
+//                    }
+//                    NetManager.getInstance(MPActivity.this).conList.add(NewCon);
+//                    mDatabase.child("Raw Data").child("MP").child(Integer.toString(counter)).child("ConName").setValue(conName);
+//                    mDatabase.child("Raw Data").child("MP").child(Integer.toString(counter)).child("MPName").setValue(NewCon.MPName);
+//                    mDatabase.child("Raw Data").child("MP").child(Integer.toString(counter)).child("Party").setValue(NewCon.Party);
+//
+//                    counter++;
+//                    if(counter == 649){
+//
+//                    }
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//                adapter.notifyDataSetChanged();
+//            }
+//        }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                Log.d("MP", "MP Net Error");
+//            }
+//        }
+//    );
+//        requestQueue.add(request2);
+//    }
 }

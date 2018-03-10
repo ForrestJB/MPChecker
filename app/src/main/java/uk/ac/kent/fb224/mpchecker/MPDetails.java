@@ -5,6 +5,7 @@ package uk.ac.kent.fb224.mpchecker;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +21,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -27,6 +32,11 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,6 +46,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -47,6 +58,9 @@ import static android.provider.ContactsContract.CommonDataKinds.Website.URL;
  */
 
 public class MPDetails extends AppCompatActivity {
+    public DatabaseReference mElectionDatabase;
+    public String ElectionURL = null;
+    public static Election election = null;
     private RecyclerView BillRecyclerView;
     private LinearLayoutManager layoutManager;
     private MPDetailsBillAdapter adapter;
@@ -59,7 +73,7 @@ public class MPDetails extends AppCompatActivity {
     public TextView ElectionResults;
     public TextView WikiLink;
     public Button Contact;
-    private boolean pagetwo = false;
+    private boolean pagetwo = true;
     private ProgressBar WikiSpinner;
     private int MPPosition;
     private Constituency MP;
@@ -143,7 +157,7 @@ public class MPDetails extends AppCompatActivity {
                                 String key = (String) iterator.next();
                                 JSONObject page = pages.getJSONObject(key);
                                 String Extract = page.getString("extract");
-                                Log.d("bio", Extract);
+                                Log.d("bio", Extract); //todo log
                                 String RawExtract = stripHtml(Extract);
                                 int ExtractLength = RawExtract.length();
 
@@ -168,39 +182,111 @@ public class MPDetails extends AppCompatActivity {
             }
         });
         requestQueue.add(request);
-        getBills();
-        String ElectionURL = "http://lda.data.parliament.uk/electionresults.json?_view=Elections&_pageSize=500&_sort=-election.label&_page=0";
-        JsonObjectRequest ERequest = new JsonObjectRequest(Request.Method.GET, ElectionURL, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    JSONObject result = response.getJSONObject("result");
-                    JSONArray items = result.getJSONArray("items");
-                    for (int i = 8; i < items.length(); i++) {
-                        JSONObject Election = items.getJSONObject(i);
-                        JSONObject Constitency = Election.getJSONObject("constituency");
-                        JSONObject label = Constitency.getJSONObject("label");
-                        String Value = label.getString("_value");
-                        if (Value.equals(MP.ConName)) {
-                            String RawURL = Election.getString("_about");
-                            String id = RawURL.substring(36);
-                            String XMLURL = "http://api.data.parliament.uk/resources/files/"+id;
-                            break;
-                        }
-                        if(i==500){pagetwo=true;}
+        for(int i=0; i<=649;i++){
+            mElectionDatabase = FirebaseDatabase.getInstance().getReference().child("Raw Data").child("Elections").child(Integer.toString(i));
+            ValueEventListener ElectionListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    Election ESearcher = dataSnapshot.getValue(Election.class);
+                    if (ESearcher.Con.equals(MP.ConName)) {
+                        String ElectionURLT = ESearcher.URL;
+                        ElectionURL = ElectionURLT + ".XML";
+                        loadPage();
                     }
+                }
+                    @Override
+                    public void onCancelled (DatabaseError databaseError){
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                    }
                 }
 
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
+                ;mElectionDatabase.addValueEventListener(ElectionListener);
+            };
+        getBills();
+//        String ElectionURL = "http://lda.data.parliament.uk/electionresults.json?_view=Elections&_pageSize=500&_sort=-election.label&_page=0";
+//        String ElectionURL2 = "http://lda.data.parliament.uk/electionresults.json?_view=Elections&_pageSize=500&_sort=-election.label&_page=1";
+//        JsonObjectRequest ERequest = new JsonObjectRequest(Request.Method.GET, ElectionURL2, null, new Response.Listener<JSONObject>() {
+//            @Override
+//            public void onResponse(JSONObject response) {
+//                try {
+//                    JSONObject result = response.getJSONObject("result");
+//                    JSONArray items = result.getJSONArray("items");
+//                    int count = 492; //todo remove this
+//                    for (int i = 0; i <= 157; i++) {
+//                        JSONObject Election = items.getJSONObject(i);
+//                        JSONObject Constitency = Election.getJSONObject("constituency");
+//                        JSONObject label = Constitency.getJSONObject("label");todo redundant, remove?
+//                        String Value = label.getString("_value");
+//                        String RawURL = Election.getString("_about");
+//                        String id = RawURL.substring(36);
+//                        String XMLURL = "http://api.data.parliament.uk/resources/files/"+id;
+//                        mDatabase = FirebaseDatabase.getInstance().getReference();
+//                        mDatabase.child("Raw Data").child("Elections").child(Integer.toString(count)).child("Con").setValue(Value);
+//                        mDatabase.child("Raw Data").child("Elections").child(Integer.toString(count)).child("URL").setValue(XMLURL);
+//                        count++;
+//                    }
+//
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//
+//            }
+//        }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//
+//            }
+//        }); requestQueue.add(ERequest);
 
+    }
+    public Election loadElection(String ElectionURL) throws ParseException, XmlPullParserException, IOException {
+        InputStream stream;
+        ElectionXMLParser electionXMLParser = new ElectionXMLParser();
+        Election electiona = null;
+        try {
+            stream = DownloadURL(ElectionURL);
+            electiona = electionXMLParser.Parse(stream);
+            Log.d("success!!", electiona.CandidateOne);
+            MPDetails.election = electiona;
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        } catch (XmlPullParserException e) {
+            e.printStackTrace();
+        }
+        return election;
+    }
+    private class DownloadXMLTask extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... url) {
+            try {
+                election = loadElection(ElectionURL);
+                return null;
+            }  catch (XmlPullParserException e) {
+                return null;
+            } catch (IOException e) {
+                return null;
+            } catch (ParseException e) {
+                return null;
             }
-        }); requestQueue.add(ERequest);
+        }
+    }
+    private void loadPage() {
+            new DownloadXMLTask().execute(ElectionURL);
+    }
+    private InputStream DownloadURL(String urlString) throws IOException {
+        URL url = new URL(urlString);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setReadTimeout(10000 /* milliseconds */);
+        conn.setConnectTimeout(15000 /* milliseconds */);
+        conn.setRequestMethod("GET");
+        conn.setDoInput(true);
+        // Starts the query
+        conn.connect();
+        InputStream stream = conn.getInputStream();
+        return stream;
     }
     public String stripHtml(String html) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {

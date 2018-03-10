@@ -5,8 +5,8 @@ package uk.ac.kent.fb224.mpchecker;
  */
 
 public class Election {
-    String Con;
-    String URL;
+    public String Con;
+    public String URL;
     String Result;
     String CandidateOne;
     String CandidateOneVotes;
