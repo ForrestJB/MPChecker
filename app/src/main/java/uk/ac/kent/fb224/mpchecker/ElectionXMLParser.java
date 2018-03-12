@@ -32,101 +32,139 @@ import java.util.Map;
 public class ElectionXMLParser {
     public DatabaseReference mElectionDatabase;
     public static final String ns = null;
-    private ArrayList<Election> ElectionList = new ArrayList<Election>();
+    private Election election;
+    private int order = 1;
 
     public Election Parse(InputStream in) throws XmlPullParserException, IOException, ParseException {
+        Log.d("XML", "called parse");
         XmlPullParser parser = Xml.newPullParser();
         parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
         parser.setInput(in, null);
         parser.nextTag();
         return readFeed(parser);
     }
+
     private Election readFeed(XmlPullParser parser) throws XmlPullParserException, IOException, ParseException {
-        Election election1 = new Election();
-
-        parser.require(XmlPullParser.START_TAG, ns, "Results");
-        while(parser.next() != XmlPullParser.END_TAG){
-            if(parser.getEventType() != XmlPullParser.START_TAG){
-                continue;
-            }
-            String name = parser.getName();
-            if(name.equals("Results")){
-                election1 = (readEntry(parser));
-            }
-        }
-        return election1;
-
-    }
-    private Election readEntry(XmlPullParser parser) throws XmlPullParserException, IOException, ParseException {
-        parser.require(XmlPullParser.START_TAG, ns, "Results");
+        Log.d("XML", "called readFeed");
         Election election = new Election();
-        String order = null;
+
+        parser.require(XmlPullParser.START_TAG, ns, "Results");
         while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
             }
             String name = parser.getName();
-            if (name.equals("Result")) {
+            Log.d("XML", name);
+            if (name.equals("Candidates")) {
+                election = readEntry(parser);
+            } else if (name.equals("Result")) {
                 election.Result = parser.getText();
-            } else if (name.equals("Candidates")) {
-                parser.require(XmlPullParser.START_TAG, ns, "Candidate");
-                while (parser.next() != XmlPullParser.END_TAG) {
-                    if (parser.getEventType() != XmlPullParser.START_TAG) {
-                        continue;
-                    }
-                    if (parser.getName().equals("order")) {
-                        order = parser.getText();
-                    }
-                    switch (order) {
-                        case "1":
-                            if (parser.getName().equals("Name")) {
-                                election.CandidateOne = parser.getText();
-                            } else if (parser.getName().equals("Party")) {
-                                election.CandidateOneParty = parser.getText();
-                            } else if (parser.getName().equals("Votes")) {
-                                election.CandidateOneVotes = parser.getText();
-                            }
-                        case "2":
-                            if (parser.getName().equals("Name")) {
-                                election.CandidateTwo = parser.getText();
-                            } else if (parser.getName().equals("Party")) {
-                                election.CandidateTwoParty = parser.getText();
-                            } else if (parser.getName().equals("Votes")) {
-                                election.CandidateTwoVotes = parser.getText();
-                            }
-                        case "3":
-                            if (parser.getName().equals("Name")) {
-                                election.CandidateThree = parser.getText();
-                            } else if (parser.getName().equals("Party")) {
-                                election.CandidateThreeParty = parser.getText();
-                            } else if (parser.getName().equals("Votes")) {
-                                election.CandidateThreeVotes = parser.getText();
-                            }
-                        case "4":
-                            if (parser.getName().equals("Name")) {
-                                election.CandidateFour = parser.getText();
-                            } else if (parser.getName().equals("Party")) {
-                                election.CandidateFourParty = parser.getText();
-                            } else if (parser.getName().equals("Votes")) {
-                                election.CandidateFourVotes = parser.getText();
-                            }
-                        case "5":
-                            if (parser.getName().equals("Name")) {
-                                election.CandidateFive = parser.getText();
-                            } else if (parser.getName().equals("Party")) {
-                                election.CandidateFiveParty = parser.getText();
-                            } else if (parser.getName().equals("Votes")) {
-                                election.CandidateFiveVotes = parser.getText();
-                            }
-                        default:
-                    }
-
-                    parser.next();
-                }
+                skip(parser);
+            } else {
+                skip(parser);
             }
         }
         return election;
+
     }
 
-    public ArrayList GetElections(){return ElectionList;}
+    private void skip(XmlPullParser parser) throws XmlPullParserException, IOException {
+        if (parser.getEventType() != XmlPullParser.START_TAG) {
+            throw new IllegalStateException();
+        }
+        int depth = 1;
+        while (depth != 0) {
+            switch (parser.next()) {
+                case XmlPullParser.END_TAG:
+                    depth--;
+                    break;
+                case XmlPullParser.START_TAG:
+                    depth++;
+                    break;
+            }
+        }
+    }
+
+    private Election readEntry(XmlPullParser parser) throws XmlPullParserException, IOException, ParseException {
+        Log.d("XML", "called readEntry");
+        Election election1 = new Election();
+        String order = null;
+        String name = parser.getName();
+        if (name.equals("Candidates")) {
+            Log.d("XML", "got candidates");
+            election1 = readCandidate(parser);
+        }
+
+        return election1;
+    }
+
+    public Election readCandidate(XmlPullParser parser) throws IOException, XmlPullParserException {
+        Log.d("XML", "called readCandidate");
+        Election election1 = new Election();
+        String name = parser.getName();
+        if(name.equals("Candidates")) {
+            parser.nextTag();
+        }
+        parser.require(XmlPullParser.START_TAG, ns, "Candidate");
+        while (parser.next() != XmlPullParser.END_TAG) {
+            if (parser.getEventType() != XmlPullParser.START_TAG) {
+                continue;}
+                if(parser.getName().equals("Candidate")){
+                parser.nextTag();
+                }
+                switch (order) {
+                    case 1:
+                        if (parser.getName().equals("Name")) {
+                            election1.CandidateOne = parser.getText();
+                        } else if (parser.getName().equals("Party")) {
+                            election1.CandidateOneParty = parser.getText();
+                        } else if (parser.getName().equals("Votes")) {
+                            election1.CandidateOneVotes = parser.getText();
+                            order++;
+                        }
+                    case 2:
+                        if (parser.getName().equals("Name")) {
+                            election1.CandidateTwo = parser.getText();
+                            Log.d("output", election1.CandidateTwo);
+                        } else if (parser.getName().equals("Party")) {
+                            election1.CandidateTwoParty = parser.getText();
+                        } else if (parser.getName().equals("Votes")) {
+                            election1.CandidateTwoVotes = parser.getText();
+                            order++;
+                        }
+                    case 3:
+                        if (parser.getName().equals("Name")) {
+                            election1.CandidateThree = parser.getText();
+                        } else if (parser.getName().equals("Party")) {
+                            election1.CandidateThreeParty = parser.getText();
+                        } else if (parser.getName().equals("Votes")) {
+                            election1.CandidateThreeVotes = parser.getText();
+                            order++;
+                        }
+                    case 4:
+                        if (parser.getName().equals("Name")) {
+                            election1.CandidateFour = parser.getText();
+                        } else if (parser.getName().equals("Party")) {
+                            election1.CandidateFourParty = parser.getText();
+                        } else if (parser.getName().equals("Votes")) {
+                            election1.CandidateFourVotes = parser.getText();
+                            order++;
+                        }
+                    case 5:
+                        if (parser.getName().equals("Name")) {
+                            election1.CandidateFive = parser.getText();
+                        } else if (parser.getName().equals("Party")) {
+                            election1.CandidateFiveParty = parser.getText();
+                        } else if (parser.getName().equals("Votes")) {
+                            election1.CandidateFiveVotes = parser.getText();
+                            order++;
+                        }
+                    default:
+                }
+            }
+            parser.nextTag();
+
+
+        return election1;
+    }
 }

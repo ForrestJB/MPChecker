@@ -244,9 +244,10 @@ public class MPDetails extends AppCompatActivity {
         ElectionXMLParser electionXMLParser = new ElectionXMLParser();
         Election electiona = null;
         try {
+            Log.d("URL", ElectionURL);
             stream = DownloadURL(ElectionURL);
             electiona = electionXMLParser.Parse(stream);
-            Log.d("success!!", electiona.CandidateOne);
+//            Log.d("success!!", electiona.CandidateOne);
             MPDetails.election = electiona;
         } catch (IOException e) {
             e.printStackTrace();
