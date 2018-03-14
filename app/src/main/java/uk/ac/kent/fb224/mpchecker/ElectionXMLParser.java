@@ -37,6 +37,7 @@ public class ElectionXMLParser {
     public static final String ns = null;
 
     public Election Parse(InputStream in) throws XmlPullParserException, IOException, ParseException {
+        Election output = new Election();
         XmlPullParser parser = Xml.newPullParser();
         parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
         parser.setInput(in, null);

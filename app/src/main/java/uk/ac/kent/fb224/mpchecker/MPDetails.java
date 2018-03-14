@@ -72,11 +72,35 @@ public class MPDetails extends AppCompatActivity {
     public TextView Con;
     public TextView ElectionResults;
     public TextView WikiLink;
+    public TextView Cand1;
+    public TextView Party1;
+    public TextView Votes1;
+    public TextView Cand2;
+    public TextView Party2;
+    public TextView Votes2;
+    public TextView Cand3;
+    public TextView Party3;
+    public TextView Votes3;
+    public TextView Cand4;
+    public TextView Party4;
+    public TextView Votes4;
+    public TextView Cand5;
+    public TextView Party5;
+    public TextView Votes5;
+    public ImageView Block1;
+    public ImageView Block2;
+    public ImageView Block3;
+    public ImageView Block4;
+    public ImageView Block5;
+    public TextView EResult;
+    public ImageView Emask;
+    public ProgressBar ESpinner;
     public Button Contact;
     private boolean pagetwo = true;
     private ProgressBar WikiSpinner;
     private int MPPosition;
     private Constituency MP;
+    public boolean isXMLDone = false;
     private ImageLoader.ImageListener imageListener1 = new ImageLoader.ImageListener() {
         @Override
         public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {//
@@ -107,11 +131,32 @@ public class MPDetails extends AppCompatActivity {
         Party = findViewById(R.id.MPDetailsParty);
         Con = findViewById(R.id.MPDetailsCon);
         Bio = findViewById(R.id.MPWikiBio);
-        ElectionResults = findViewById(R.id.MPElectionResults);
         Contact = findViewById(R.id.MPDetailsContactMP);
         WikiSpinner = findViewById(R.id.MPWikiSpinner);
         WikiLink = findViewById(R.id.MPDWikiLink);
-
+        Cand1 = findViewById(R.id.MPDCand1);
+        Party1 = findViewById(R.id.MPDParty1);
+        Votes1 = findViewById(R.id.MPDVotes1);
+        Cand2 = findViewById(R.id.MPDCand2);
+        Party2 = findViewById(R.id.MPDParty2);
+        Votes2 = findViewById(R.id.MPDVotes2);
+        Cand3 = findViewById(R.id.MPDCand3);
+        Party3 = findViewById(R.id.MPDParty3);
+        Votes3 = findViewById(R.id.MPDVotes3);
+        Cand4 = findViewById(R.id.MPDCand4);
+        Party4 = findViewById(R.id.MPDParty4);
+        Votes4 = findViewById(R.id.MPDVotes4);
+        Cand5 = findViewById(R.id.MPDCand5);
+        Party5 = findViewById(R.id.MPDParty5);
+        Votes5 = findViewById(R.id.MPDVotes5);
+        Block1 = findViewById(R.id.MPDPBlock1);
+        Block2 = findViewById(R.id.MPDPBlock2);
+        Block3 = findViewById(R.id.MPDPBlock3);
+        Block4 = findViewById(R.id.MPDPBlock4);
+        Block5 = findViewById(R.id.MPDPBlock5);
+        EResult = findViewById(R.id.MPDEResult);
+        Emask = findViewById(R.id.MPDEMask);
+        ESpinner = findViewById(R.id.MPDESpinner);
         Name.setText(MP.MPName);
         Con.setText(MP.ConName);
         Role.setText(MP.MPRole);
@@ -248,7 +293,6 @@ public class MPDetails extends AppCompatActivity {
             stream = DownloadURL(ElectionURL);
             electiona = electionXMLParser.Parse(stream);
             Log.d("success!!", electiona.CandidateThree);
-            MPDetails.election = electiona;
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ParseException e) {
@@ -256,7 +300,27 @@ public class MPDetails extends AppCompatActivity {
         } catch (XmlPullParserException e) {
             e.printStackTrace();
         }
-        return election;
+        return electiona;
+    }
+    public void applyElection(Election election){
+        Cand1.setText(election.CandidateOne);
+        Cand2.setText(election.CandidateTwo);
+        Cand3.setText(election.CandidateThree);
+        Cand4.setText(election.CandidateFour);
+        Cand5.setText(election.CandidateFive);
+        Party1.setText(election.CandidateOneParty);
+        Party2.setText(election.CandidateTwoParty);
+        Party3.setText(election.CandidateThreeParty);
+        Party4.setText(election.CandidateFourParty);
+        Party5.setText(election.CandidateFiveParty);
+        Votes1.setText(election.CandidateOneVotes);
+        Votes2.setText(election.CandidateTwoVotes);
+        Votes3.setText(election.CandidateThreeVotes);
+        Votes4.setText(election.CandidateFourVotes);
+        Votes5.setText(election.CandidateFiveVotes);
+        EResult.setText(election.Result);
+        Emask.setVisibility(View.GONE);
+        ESpinner.setVisibility(View.GONE);
     }
     private class DownloadXMLTask extends AsyncTask<String, Void, String> {
 
@@ -272,6 +336,12 @@ public class MPDetails extends AppCompatActivity {
             } catch (ParseException e) {
                 return null;
             }
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            applyElection(election);
         }
     }
     private void loadPage() {

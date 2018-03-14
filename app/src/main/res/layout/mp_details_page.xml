@@ -7,7 +7,9 @@
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
@@ -193,7 +195,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
                     android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="32dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -219,7 +221,159 @@
                 android:layout_height="wrap_content"
                 android:elevation="4dp"
                 app:layout_constraintTop_toBottomOf="@+id/Constraint2"
-                tools:layout_editor_absoluteX="33dp">
+                tools:layout_editor_absoluteX="0dp">
+
+                <TextView
+                    android:id="@+id/MPDEResult"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:textColor="@android:color/black"
+                    android:textSize="14sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/textView22"
+                    app:layout_constraintStart_toEndOf="@+id/textView22"
+                    app:layout_constraintTop_toTopOf="@+id/textView22" />
+
+                <TextView
+                    android:id="@+id/textView22"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="Election Result:"
+                    android:textColor="@android:color/black"
+                    android:textSize="14sp"
+                    app:layout_constraintEnd_toEndOf="@+id/textView8"
+                    app:layout_constraintStart_toEndOf="@+id/profile_image2"
+                    app:layout_constraintTop_toBottomOf="@+id/textView8" />
+
+                <ImageView
+                    android:id="@+id/MPDPBlock5"
+                    android:layout_width="20dp"
+                    android:layout_height="0dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/MPDCand5"
+                    app:layout_constraintEnd_toEndOf="@+id/MPDPBlock4"
+                    app:layout_constraintStart_toStartOf="@+id/MPDPBlock4"
+                    app:layout_constraintTop_toTopOf="@+id/MPDCand5"
+                    app:srcCompat="?android:attr/colorPressedHighlight" />
+
+                <ImageView
+                    android:id="@+id/MPDPBlock4"
+                    android:layout_width="20dp"
+                    android:layout_height="19dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/MPDCand4"
+                    app:layout_constraintEnd_toEndOf="@+id/MPDPBlock3"
+                    app:layout_constraintStart_toStartOf="@+id/MPDPBlock3"
+                    app:layout_constraintTop_toTopOf="@+id/MPDCand4"
+                    app:srcCompat="?android:attr/colorPressedHighlight" />
+
+                <TextView
+                    android:id="@+id/MPDCand5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="25dp"
+                    android:layout_marginTop="4dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/textView5"
+                    app:layout_constraintStart_toStartOf="@+id/textView5"
+                    app:layout_constraintTop_toBottomOf="@+id/MPDCand4" />
+
+                <TextView
+                    android:id="@+id/MPDParty5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    app:layout_constraintEnd_toEndOf="@+id/textView7"
+                    app:layout_constraintStart_toStartOf="@+id/textView7"
+                    app:layout_constraintTop_toBottomOf="@+id/MPDParty4" />
+
+                <TextView
+                    android:id="@+id/MPDVotes5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="4dp"
+                    android:layout_marginTop="4dp"
+                    app:layout_constraintEnd_toEndOf="@+id/textView9"
+                    app:layout_constraintStart_toStartOf="@+id/textView9"
+                    app:layout_constraintTop_toBottomOf="@+id/MPDVotes4" />
+
+                <TextView
+                    android:id="@+id/MPDCand4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    app:layout_constraintEnd_toEndOf="@+id/textView5"
+                    app:layout_constraintStart_toStartOf="@+id/textView5"
+                    app:layout_constraintTop_toBottomOf="@+id/MPDCand3" />
+
+                <TextView
+                    android:id="@+id/MPDParty4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    app:layout_constraintEnd_toEndOf="@+id/textView7"
+                    app:layout_constraintHorizontal_bias="0.512"
+                    app:layout_constraintStart_toStartOf="@+id/textView7"
+                    app:layout_constraintTop_toBottomOf="@+id/MPDParty3" />
+
+                <TextView
+                    android:id="@+id/MPDVotes4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="4dp"
+                    android:layout_marginTop="4dp"
+                    app:layout_constraintEnd_toEndOf="@+id/textView9"
+                    app:layout_constraintStart_toStartOf="@+id/textView9"
+                    app:layout_constraintTop_toBottomOf="@+id/MPDVotes3" />
+
+                <ImageView
+                    android:id="@+id/MPDPBlock3"
+                    android:layout_width="20dp"
+                    android:layout_height="0dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/MPDCand3"
+                    app:layout_constraintEnd_toEndOf="@+id/MPDPBlock2"
+                    app:layout_constraintStart_toStartOf="@+id/MPDPBlock2"
+                    app:layout_constraintTop_toTopOf="@+id/MPDCand3"
+                    app:srcCompat="?android:attr/colorPressedHighlight" />
+
+                <TextView
+                    android:id="@+id/MPDCand3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    app:layout_constraintEnd_toEndOf="@+id/textView5"
+                    app:layout_constraintStart_toStartOf="@+id/textView5"
+                    app:layout_constraintTop_toBottomOf="@+id/MPDCand2" />
+
+                <TextView
+                    android:id="@+id/MPDParty3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    app:layout_constraintEnd_toEndOf="@+id/textView7"
+                    app:layout_constraintStart_toStartOf="@+id/textView7"
+                    app:layout_constraintTop_toBottomOf="@+id/MPDParty2" />
+
+                <TextView
+                    android:id="@+id/MPDVotes3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    app:layout_constraintEnd_toEndOf="@+id/textView9"
+                    app:layout_constraintHorizontal_bias="0.428"
+                    app:layout_constraintStart_toStartOf="@+id/textView9"
+                    app:layout_constraintTop_toBottomOf="@+id/MPDVotes2" />
+
+                <ImageView
+                    android:id="@+id/MPDPBlock2"
+                    android:layout_width="20dp"
+                    android:layout_height="0dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/MPDCand2"
+                    app:layout_constraintEnd_toEndOf="@+id/MPDPBlock1"
+                    app:layout_constraintStart_toStartOf="@+id/MPDPBlock1"
+                    app:layout_constraintTop_toTopOf="@+id/MPDCand2"
+                    app:srcCompat="?android:attr/colorPressedHighlight" />
 
                 <ImageView
                     android:id="@+id/imageView8"
@@ -254,18 +408,122 @@
                     app:layout_constraintTop_toTopOf="@+id/textView8" />
 
                 <TextView
-                    android:id="@+id/MPElectionResults"
-                    android:layout_width="0dp"
+                    android:id="@+id/MPDCand1"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="6dp"
+                    app:layout_constraintEnd_toEndOf="@+id/textView5"
+                    app:layout_constraintStart_toStartOf="@+id/textView5"
+                    app:layout_constraintTop_toBottomOf="@+id/textView5" />
+
+                <TextView
+                    android:id="@+id/MPDParty1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="@+id/textView7"
+                    app:layout_constraintStart_toStartOf="@+id/textView7"
+                    app:layout_constraintTop_toTopOf="@+id/MPDCand1" />
+
+                <TextView
+                    android:id="@+id/MPDVotes1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="@+id/textView9"
+                    app:layout_constraintStart_toStartOf="@+id/textView9"
+                    app:layout_constraintTop_toTopOf="@+id/MPDCand1" />
+
+                <ImageView
+                    android:id="@+id/MPDPBlock1"
+                    android:layout_width="20dp"
+                    android:layout_height="0dp"
                     android:layout_marginEnd="16dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
-                    android:text="There will be a breakdown of the most recent election results here as soon as I can figure out the parliament api"
+                    app:layout_constraintBottom_toBottomOf="@+id/MPDCand1"
+                    app:layout_constraintEnd_toStartOf="@+id/MPDCand1"
+                    app:layout_constraintTop_toTopOf="@+id/MPDCand1"
+                    app:layout_constraintVertical_bias="1.0"
+                    app:srcCompat="?android:attr/colorPressedHighlight" />
+
+                <TextView
+                    android:id="@+id/textView5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="70dp"
+                    android:layout_marginTop="8dp"
+                    android:text="Candidate"
+                    android:textColor="@android:color/black"
+                    android:textSize="18sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView22" />
+
+                <TextView
+                    android:id="@+id/textView7"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="50dp"
+                    android:text="Party"
+                    android:textColor="@android:color/black"
+                    android:textSize="18sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/textView5"
+                    app:layout_constraintStart_toEndOf="@+id/textView5"
+                    app:layout_constraintTop_toTopOf="@+id/textView5" />
+
+                <TextView
+                    android:id="@+id/textView9"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="50dp"
+                    android:text="Votes"
+                    android:textColor="@android:color/black"
+                    android:textSize="18sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/textView7"
+                    app:layout_constraintStart_toEndOf="@+id/textView7" />
+
+                <TextView
+                    android:id="@+id/MPDCand2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    app:layout_constraintEnd_toEndOf="@+id/textView5"
+                    app:layout_constraintStart_toStartOf="@+id/textView5"
+                    app:layout_constraintTop_toBottomOf="@+id/MPDCand1" />
+
+                <TextView
+                    android:id="@+id/MPDParty2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    app:layout_constraintEnd_toEndOf="@+id/textView7"
+                    app:layout_constraintStart_toStartOf="@+id/textView7"
+                    app:layout_constraintTop_toBottomOf="@+id/MPDParty1" />
+
+                <TextView
+                    android:id="@+id/MPDVotes2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    app:layout_constraintEnd_toEndOf="@+id/textView9"
+                    app:layout_constraintStart_toStartOf="@+id/textView9"
+                    app:layout_constraintTop_toBottomOf="@+id/MPDVotes1" />
+
+                <ImageView
+                    android:id="@+id/MPDEMask"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView8" />
+                    app:layout_constraintTop_toBottomOf="@+id/textView8"
+                    app:srcCompat="@android:color/background_light" />
+
+                <ProgressBar
+                    android:id="@+id/MPDESpinner"
+                    style="?android:attr/progressBarStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="@+id/MPDEMask"
+                    app:layout_constraintEnd_toEndOf="@+id/MPDEMask"
+                    app:layout_constraintStart_toStartOf="@+id/MPDEMask"
+                    app:layout_constraintTop_toTopOf="@+id/MPDEMask" />
 
             </android.support.constraint.ConstraintLayout>
 
