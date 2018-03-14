@@ -163,7 +163,6 @@ public class MPActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 final Constituency NewCon = dataSnapshot.getValue(Constituency.class);
                 NetManager.getInstance(MPActivity.this).conList.add(NewCon);
-                j++;
                 adapter.notifyDataSetChanged();
             }
             @Override
@@ -186,18 +185,20 @@ public class MPActivity extends AppCompatActivity {
 public void addTextListener(String query){
                 query = query.toString().toLowerCase();
                 ArrayList<Constituency> list = new ArrayList<Constituency>();
-                if(IsFavOpen == false) {
-                    list = NetManager.getInstance(MPActivity.this).conList;
-                }
-                else {
+                list = NetManager.getInstance(MPActivity.this).conList;
+                if(IsFavOpen == true) {
                     list = NetManager.getInstance(MPActivity.this).conFavList;
                 }
+
                 final ArrayList<Constituency> FilteredList = new ArrayList<Constituency>();
 
                 for(int i=0; i<list.size(); i++){
-                    final String Text = list.get(i).MPName.toLowerCase();
-                    if(Text.contains(query)){
-                        FilteredList.add(list.get(i));
+                    if(i != 121) {
+                        final String Text = list.get(i).MPName.toLowerCase();
+                        Log.d("iterations", Integer.toString(i));
+                        if (Text.contains(query)) {
+                            FilteredList.add(list.get(i));
+                        }
                     }
                 }
                 MPRecyclerView.setLayoutManager(new LinearLayoutManager(MPActivity.this));

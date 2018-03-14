@@ -1,5 +1,5 @@
-package uk.ac.kent.fb224.mpchecker;
 
+package uk.ac.kent.fb224.mpchecker;
 import android.os.AsyncTask;
 import android.os.DropBoxManager;
 import android.util.Log;
@@ -27,16 +27,16 @@ import java.util.Map;
 
 /**
  * Created by Forrest on 08/03/2018.
+ *
+ * Ok so this class is here to parse the XML file that contains the details of the most recent published election for the chosen MP/Constituency
+ * its pretty unoptimised and ugly, but it does work for this specific xml format that Parliament is using
+ * todo full comments for this piece of shit and be done with it
  */
 
 public class ElectionXMLParser {
-    public DatabaseReference mElectionDatabase;
     public static final String ns = null;
-    private Election election;
-    private int order = 1;
 
     public Election Parse(InputStream in) throws XmlPullParserException, IOException, ParseException {
-        Log.d("XML", "called parse");
         XmlPullParser parser = Xml.newPullParser();
         parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
         parser.setInput(in, null);
@@ -45,33 +45,30 @@ public class ElectionXMLParser {
     }
 
     private Election readFeed(XmlPullParser parser) throws XmlPullParserException, IOException, ParseException {
-        Log.d("XML", "called readFeed");
         Election election = new Election();
-
+        String Result = " ";
         parser.require(XmlPullParser.START_TAG, ns, "Results");
         while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
             }
             String name = parser.getName();
-            Log.d("XML", name);
             if (name.equals("Candidates")) {
                 election = readEntry(parser);
             } else if (name.equals("Result")) {
-                election.Result = parser.getText();
-                skip(parser);
+                parser.next();
+                Result = parser.getText();
+                parser.next();parser.next();
             } else {
                 skip(parser);
             }
         }
+        election.Result = Result;
         return election;
 
     }
 
     private void skip(XmlPullParser parser) throws XmlPullParserException, IOException {
-        if (parser.getEventType() != XmlPullParser.START_TAG) {
-            throw new IllegalStateException();
-        }
         int depth = 1;
         while (depth != 0) {
             switch (parser.next()) {
@@ -85,13 +82,11 @@ public class ElectionXMLParser {
         }
     }
 
-    private Election readEntry(XmlPullParser parser) throws XmlPullParserException, IOException, ParseException {
-        Log.d("XML", "called readEntry");
+    private Election readEntry(XmlPullParser parser) throws XmlPullParserException, IOException, ParseException {;
         Election election1 = new Election();
         String order = null;
         String name = parser.getName();
         if (name.equals("Candidates")) {
-            Log.d("XML", "got candidates");
             election1 = readCandidate(parser);
         }
 
@@ -99,72 +94,238 @@ public class ElectionXMLParser {
     }
 
     public Election readCandidate(XmlPullParser parser) throws IOException, XmlPullParserException {
-        Log.d("XML", "called readCandidate");
         Election election1 = new Election();
         String name = parser.getName();
-        if(name.equals("Candidates")) {
-            parser.nextTag();
-        }
-        parser.require(XmlPullParser.START_TAG, ns, "Candidate");
+        String order = null;
+        parser.require(XmlPullParser.START_TAG, ns, "Candidates");
         while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
-                continue;}
-                if(parser.getName().equals("Candidate")){
+                continue;
+            }
+            if (parser.getName().equals("Candidate")) {
+                order = parser.getAttributeValue(null, "Order");
                 parser.nextTag();
-                }
-                switch (order) {
-                    case 1:
+                if (order.equals("1")) {
+                    boolean done = false;
+                    while (done == false) {
                         if (parser.getName().equals("Name")) {
-                            election1.CandidateOne = parser.getText();
+                            if (parser.getName() != null && parser.getName().equalsIgnoreCase("Name")) {
+                                parser.next();
+                                if(election1.CandidateOne == null) {
+                                    election1.CandidateOne = parser.getText();
+                                }
+                                parser.next();
+                            }
                         } else if (parser.getName().equals("Party")) {
-                            election1.CandidateOneParty = parser.getText();
+                            if (parser.getName() != null && parser.getName().equalsIgnoreCase("Party")) {
+                                parser.next();
+                                if(election1.CandidateOneParty == null) {
+                                    election1.CandidateOneParty = parser.getText();
+                                }
+                                parser.next();
+                            }
                         } else if (parser.getName().equals("Votes")) {
-                            election1.CandidateOneVotes = parser.getText();
-                            order++;
+                            if (parser.getName() != null && parser.getName().equalsIgnoreCase("Votes")) {
+                                parser.next();
+                                if (election1.CandidateOneVotes == null) {
+                                    election1.CandidateOneVotes = parser.getText();
+                                }
+                                parser.next();
+                            }
+                                } else if (parser.getName().equals("Constituency")) {
+                                    done = true;
+                            while(!parser.getName().equals("Candidate")){
+                                parser.next();
+                                while(parser.getName() == null){
+                                    parser.next();
+                                }
+                            }
+                                }
+                         else {
+                           parser.next();
+                           while(parser.getEventType() != XmlPullParser.START_TAG){
+                               parser.next();
+                           }
                         }
-                    case 2:
+                    }
+                } else if (order.equals("2")) {
+                    boolean done = false;
+                    while (done == false) {
                         if (parser.getName().equals("Name")) {
-                            election1.CandidateTwo = parser.getText();
-                            Log.d("output", election1.CandidateTwo);
+                            if (parser.getName() != null && parser.getName().equalsIgnoreCase("Name")) {
+                                parser.next();
+                                if(election1.CandidateTwo == null) {
+                                    election1.CandidateTwo = parser.getText();
+                                }
+                            }
+                            parser.next();
                         } else if (parser.getName().equals("Party")) {
-                            election1.CandidateTwoParty = parser.getText();
+                            if (parser.getName() != null && parser.getName().equalsIgnoreCase("Party")) {
+                                parser.next();
+                                if(election1.CandidateTwoParty == null) {
+                                    election1.CandidateTwoParty = parser.getText();
+                                }
+                                parser.next();
+                            }
                         } else if (parser.getName().equals("Votes")) {
-                            election1.CandidateTwoVotes = parser.getText();
-                            order++;
+                            if (parser.getName() != null && parser.getName().equalsIgnoreCase("Votes")) {
+                                parser.next();
+                                if(election1.CandidateTwoVotes == null) {
+                                    election1.CandidateTwoVotes = parser.getText();
+                                }
+                                parser.next();
+                            }
+
                         }
-                    case 3:
+                            else if (parser.getName().equals("Constituency")) {
+                                done = true;
+                            while(!parser.getName().equals("Candidate")){
+                                parser.next();
+                                while(parser.getName() == null){
+                                    parser.next();
+                                }
+                            }
+                            }
+                         else {
+                            parser.next();
+                            while(parser.getEventType() != XmlPullParser.START_TAG){
+                                parser.next();
+                            }
+                        }
+                    }
+                } else if (order.equals("3")) {
+                    boolean done = false;
+                    while (done == false) {
                         if (parser.getName().equals("Name")) {
-                            election1.CandidateThree = parser.getText();
+                            if (parser.getName() != null && parser.getName().equalsIgnoreCase("Name")) {
+                                parser.next();
+                                if(election1.CandidateThree == null) {
+                                    election1.CandidateThree = parser.getText();
+                                }
+                                parser.next();
+                            }
                         } else if (parser.getName().equals("Party")) {
-                            election1.CandidateThreeParty = parser.getText();
+                            if (parser.getName() != null && parser.getName().equalsIgnoreCase("Party")) {
+                                parser.next();
+                                if( election1.CandidateThreeParty == null) {
+                                    election1.CandidateThreeParty = parser.getText();
+                                }
+                                parser.next();
+                            }
                         } else if (parser.getName().equals("Votes")) {
-                            election1.CandidateThreeVotes = parser.getText();
-                            order++;
+                            if (parser.getName() != null && parser.getName().equalsIgnoreCase("Votes")) {
+                                parser.next();
+                                if(election1.CandidateThreeVotes == null) {
+                                    election1.CandidateThreeVotes = parser.getText();
+                                }
+                                parser.next();
+                            }
+                            } else if (parser.getName().equals("Constituency")) {
+                                done = true;
+                            while(!parser.getName().equals("Candidate")){
+                                parser.next();
+                                while(parser.getName() == null){
+                                    parser.next();
+                                }
+                            }
+                            }
+                         else {
+                            parser.next();
+                            while(parser.getEventType() != XmlPullParser.START_TAG){
+                                parser.next();
+                            }
                         }
-                    case 4:
+                    }
+                } else if (order.equals("4")) {
+                    boolean done = false;
+                    while (done == false) {
                         if (parser.getName().equals("Name")) {
-                            election1.CandidateFour = parser.getText();
+                            if (parser.getName() != null && parser.getName().equalsIgnoreCase("Name")) {
+                                parser.next();
+                                if(election1.CandidateFour == null) {
+                                    election1.CandidateFour = parser.getText();
+                                }
+                                parser.next();
+                            }
                         } else if (parser.getName().equals("Party")) {
-                            election1.CandidateFourParty = parser.getText();
+                            if (parser.getName() != null && parser.getName().equalsIgnoreCase("Party")) {
+                                parser.next();
+                                if(election1.CandidateFourParty == null) {
+                                    election1.CandidateFourParty = parser.getText();
+                                }
+                                parser.next();
+                            }
                         } else if (parser.getName().equals("Votes")) {
-                            election1.CandidateFourVotes = parser.getText();
-                            order++;
+                            if (parser.getName() != null && parser.getName().equalsIgnoreCase("Votes")) {
+                                parser.next();
+                                if(election1.CandidateFourVotes == null) {
+                                    election1.CandidateFourVotes = parser.getText();
+                                }
+                                parser.next();
+                            }
+                            } else if (parser.getName().equals("Constituency")) {
+                                done = true;
+                            while(!parser.getName().equals("Candidate")){
+                                parser.next();
+                                while(parser.getName() == null){
+                                    parser.next();
+                                }
+                            }
+                            }
+                         else {
+                            parser.next();
+                            while(parser.getEventType() != XmlPullParser.START_TAG){
+                                parser.next();
+                            }
                         }
-                    case 5:
+                    }
+                } else if (order.equals("5")) {
+                    boolean done = false;
+                    while (done == false) {
                         if (parser.getName().equals("Name")) {
-                            election1.CandidateFive = parser.getText();
+                            if (parser.getName() != null && parser.getName().equalsIgnoreCase("Name")) {
+                                parser.next();
+                                if(election1.CandidateFive == null) {
+                                    election1.CandidateFive = parser.getText();
+                                }
+                                parser.next();
+                            }
                         } else if (parser.getName().equals("Party")) {
-                            election1.CandidateFiveParty = parser.getText();
+                            if (parser.getName() != null && parser.getName().equalsIgnoreCase("Party")) {
+                                parser.next();
+                                if(election1.CandidateFiveParty == null) {
+                                    election1.CandidateFiveParty = parser.getText();
+                                }
+                                parser.next();
+                            }
                         } else if (parser.getName().equals("Votes")) {
-                            election1.CandidateFiveVotes = parser.getText();
-                            order++;
+                            if (parser.getName() != null && parser.getName().equalsIgnoreCase("Votes")) {
+                                parser.next();
+                                if(election1.CandidateFiveVotes == null) {
+                                    election1.CandidateFiveVotes = parser.getText();
+                                }
+                                parser.next();
+                            }
+                            } else if (parser.getName().equals("Constituency")) {
+                                done = true;
+                            while(!parser.getName().equals("Candidate")){
+                                parser.next();
+                                while(parser.getName() == null){
+                                    parser.next();
+                                }
+                            }
+                            }
+                         else {
+                            parser.next();
+                            while(parser.getEventType() != XmlPullParser.START_TAG){
+                                parser.next();
+                            }
                         }
-                    default:
+                    }
+
                 }
             }
-            parser.nextTag();
-
-
+        }
         return election1;
     }
 }
