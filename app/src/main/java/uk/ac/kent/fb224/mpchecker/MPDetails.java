@@ -4,6 +4,7 @@
 package uk.ac.kent.fb224.mpchecker;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -309,10 +310,161 @@ public class MPDetails extends AppCompatActivity {
         Cand4.setText(election.CandidateFour);
         Cand5.setText(election.CandidateFive);
         Party1.setText(election.CandidateOneParty);
+        if(election.CandidateOneParty.equals("Con")) {
+            Block1.setBackgroundColor(Color.rgb(0,135, 220));
+        }
+        else if (election.CandidateOneParty.equals("Lab")){
+            Block1.setBackgroundColor(Color.rgb(146,0,13));
+        }
+        else if (election.CandidateOneParty.equals("Lab")){
+            Block1.setBackgroundColor(Color.rgb(146,0,14));
+        }
+        else if (election.CandidateOneParty.equals("LD")){
+            Block1.setBackgroundColor(Color.rgb(253,187,48));
+        }
+        else if(election.CandidateOneParty.equals("SNP")){
+            Block1.setBackgroundColor(Color.rgb(255,249,93));
+        }
+        else if (election.CandidateOneParty.equals("Plaid Cymru")){
+            Block1.setBackgroundColor(Color.rgb(63,132,40));
+        }
+        else if (election.CandidateOneParty.equals("Green")) {
+            Block1.setBackgroundColor(Color.rgb(0,116,95));
+        }
+        else if (election.CandidateOneParty.equals("DUP")){
+            Block1.setBackgroundColor(Color.rgb(212,106,76));
+        }
+        else if (election.CandidateOneParty.equals("SF")){
+            Block1.setBackgroundColor(Color.rgb(0,136,0));
+        }
+        else if (election.CandidateOneParty.equals("Speaker")){
+            Block1.setBackgroundColor(Color.rgb(0,0,0));
+        }
         Party2.setText(election.CandidateTwoParty);
+        if(election.CandidateTwoParty.equals("Con")) {
+            Block2.setBackgroundColor(Color.rgb(0,135, 220));
+        }
+        else if (election.CandidateTwoParty.equals("Lab")){
+            Block2.setBackgroundColor(Color.rgb(146,0,13));
+        }
+        else if (election.CandidateTwoParty.equals("Lab")){
+            Block2.setBackgroundColor(Color.rgb(146,0,14));
+        }
+        else if (election.CandidateTwoParty.equals("LD")){
+            Block2.setBackgroundColor(Color.rgb(253,187,48));
+        }
+        else if(election.CandidateTwoParty.equals("SNP")){
+            Block2.setBackgroundColor(Color.rgb(255,249,93));
+        }
+        else if (election.CandidateTwoParty.equals("Plaid Cymru")){
+            Block2.setBackgroundColor(Color.rgb(63,132,40));
+        }
+        else if (election.CandidateTwoParty.equals("Green")) {
+            Block2.setBackgroundColor(Color.rgb(0,116,95));
+        }
+        else if (election.CandidateTwoParty.equals("DUP")){
+            Block2.setBackgroundColor(Color.rgb(212,106,76));
+        }
+        else if (election.CandidateTwoParty.equals("SF")){
+            Block2.setBackgroundColor(Color.rgb(0,136,0));
+        }
+        else if (election.CandidateTwoParty.equals("Speaker")){
+            Block2.setBackgroundColor(Color.rgb(0,0,0));
+        }
         Party3.setText(election.CandidateThreeParty);
+        if(election.CandidateThreeParty.equals("Con")) {
+            Block3.setBackgroundColor(Color.rgb(0,135, 220));
+        }
+        else if (election.CandidateThreeParty.equals("Lab")){
+            Block3.setBackgroundColor(Color.rgb(146,0,13));
+        }
+        else if (election.CandidateThreeParty.equals("Lab")){
+            Block3.setBackgroundColor(Color.rgb(146,0,14));
+        }
+        else if (election.CandidateThreeParty.equals("LD")){
+            Block3.setBackgroundColor(Color.rgb(253,187,48));
+        }
+        else if(election.CandidateThreeParty.equals("SNP")){
+            Block3.setBackgroundColor(Color.rgb(255,249,93));
+        }
+        else if (election.CandidateThreeParty.equals("Plaid Cymru")){
+            Block3.setBackgroundColor(Color.rgb(63,132,40));
+        }
+        else if (election.CandidateThreeParty.equals("Green")) {
+            Block3.setBackgroundColor(Color.rgb(0,116,95));
+        }
+        else if (election.CandidateThreeParty.equals("DUP")){
+            Block3.setBackgroundColor(Color.rgb(212,106,76));
+        }
+        else if (election.CandidateThreeParty.equals("SF")){
+            Block3.setBackgroundColor(Color.rgb(0,136,0));
+        }
+        else if (election.CandidateThreeParty.equals("Speaker")){
+            Block3.setBackgroundColor(Color.rgb(0,0,0));
+        }
         Party4.setText(election.CandidateFourParty);
+        if(election.CandidateFourParty.equals("Con")) {
+            Block4.setBackgroundColor(Color.rgb(0,135, 220));
+        }
+        else if (election.CandidateFourParty.equals("Lab")){
+            Block4.setBackgroundColor(Color.rgb(146,0,13));
+        }
+        else if (election.CandidateFourParty.equals("Lab")){
+            Block4.setBackgroundColor(Color.rgb(146,0,14));
+        }
+        else if (election.CandidateFourParty.equals("LD")){
+            Block4.setBackgroundColor(Color.rgb(253,187,48));
+        }
+        else if(election.CandidateFourParty.equals("SNP")){
+            Block4.setBackgroundColor(Color.rgb(255,249,93));
+        }
+        else if (election.CandidateFourParty.equals("Plaid Cymru")){
+            Block4.setBackgroundColor(Color.rgb(63,132,40));
+        }
+        else if (election.CandidateFourParty.equals("Green")) {
+            Block4.setBackgroundColor(Color.rgb(0,116,95));
+        }
+        else if (election.CandidateFourParty.equals("DUP")){
+            Block4.setBackgroundColor(Color.rgb(212,106,76));
+        }
+        else if (election.CandidateFourParty.equals("SF")){
+            Block4.setBackgroundColor(Color.rgb(0,136,0));
+        }
+        else if (election.CandidateFourParty.equals("Speaker")){
+            Block4.setBackgroundColor(Color.rgb(0,0,0));
+        }
+        if(election.CandidateFiveParty != null){
         Party5.setText(election.CandidateFiveParty);
+        if(election.CandidateFiveParty.equals("Con")) {
+            Block5.setBackgroundColor(Color.rgb(0,135, 220));
+        }
+        else if (election.CandidateFiveParty.equals("Lab")){
+            Block5.setBackgroundColor(Color.rgb(146,0,13));
+        }
+        else if (election.CandidateFiveParty.equals("Lab")){
+            Block5.setBackgroundColor(Color.rgb(146,0,14));
+        }
+        else if (election.CandidateFiveParty.equals("LD")){
+            Block5.setBackgroundColor(Color.rgb(253,187,48));
+        }
+        else if(election.CandidateFiveParty.equals("SNP")){
+            Block5.setBackgroundColor(Color.rgb(255,249,93));
+        }
+        else if (election.CandidateFiveParty.equals("Plaid Cymru")){
+            Block5.setBackgroundColor(Color.rgb(63,132,40));
+        }
+        else if (election.CandidateFiveParty.equals("Green")) {
+            Block5.setBackgroundColor(Color.rgb(0,116,95));
+        }
+        else if (election.CandidateFiveParty.equals("DUP")){
+            Block5.setBackgroundColor(Color.rgb(212,106,76));
+        }
+        else if (election.CandidateFiveParty.equals("SF")){
+            Block5.setBackgroundColor(Color.rgb(0,136,0));
+        }
+        else if (election.CandidateFiveParty.equals("Speaker")){
+            Block5.setBackgroundColor(Color.rgb(0,0,0));
+        }}
         Votes1.setText(election.CandidateOneVotes);
         Votes2.setText(election.CandidateTwoVotes);
         Votes3.setText(election.CandidateThreeVotes);
