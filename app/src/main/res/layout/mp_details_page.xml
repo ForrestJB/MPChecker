@@ -255,8 +255,7 @@
                     app:layout_constraintBottom_toBottomOf="@+id/MPDCand5"
                     app:layout_constraintEnd_toEndOf="@+id/MPDPBlock4"
                     app:layout_constraintStart_toStartOf="@+id/MPDPBlock4"
-                    app:layout_constraintTop_toTopOf="@+id/MPDCand5"
-                    app:srcCompat="?android:attr/colorPressedHighlight" />
+                    app:layout_constraintTop_toTopOf="@+id/MPDCand5" />
 
                 <ImageView
                     android:id="@+id/MPDPBlock4"
@@ -265,8 +264,7 @@
                     app:layout_constraintBottom_toBottomOf="@+id/MPDCand4"
                     app:layout_constraintEnd_toEndOf="@+id/MPDPBlock3"
                     app:layout_constraintStart_toStartOf="@+id/MPDPBlock3"
-                    app:layout_constraintTop_toTopOf="@+id/MPDCand4"
-                    app:srcCompat="?android:attr/colorPressedHighlight" />
+                    app:layout_constraintTop_toTopOf="@+id/MPDCand4" />
 
                 <TextView
                     android:id="@+id/MPDCand5"
@@ -334,8 +332,7 @@
                     app:layout_constraintBottom_toBottomOf="@+id/MPDCand3"
                     app:layout_constraintEnd_toEndOf="@+id/MPDPBlock2"
                     app:layout_constraintStart_toStartOf="@+id/MPDPBlock2"
-                    app:layout_constraintTop_toTopOf="@+id/MPDCand3"
-                    app:srcCompat="?android:attr/colorPressedHighlight" />
+                    app:layout_constraintTop_toTopOf="@+id/MPDCand3" />
 
                 <TextView
                     android:id="@+id/MPDCand3"
@@ -372,8 +369,7 @@
                     app:layout_constraintBottom_toBottomOf="@+id/MPDCand2"
                     app:layout_constraintEnd_toEndOf="@+id/MPDPBlock1"
                     app:layout_constraintStart_toStartOf="@+id/MPDPBlock1"
-                    app:layout_constraintTop_toTopOf="@+id/MPDCand2"
-                    app:srcCompat="?android:attr/colorPressedHighlight" />
+                    app:layout_constraintTop_toTopOf="@+id/MPDCand2" />
 
                 <ImageView
                     android:id="@+id/imageView8"
@@ -440,8 +436,7 @@
                     app:layout_constraintBottom_toBottomOf="@+id/MPDCand1"
                     app:layout_constraintEnd_toStartOf="@+id/MPDCand1"
                     app:layout_constraintTop_toTopOf="@+id/MPDCand1"
-                    app:layout_constraintVertical_bias="1.0"
-                    app:srcCompat="?android:attr/colorPressedHighlight" />
+                    app:layout_constraintVertical_bias="1.0" />
 
                 <TextView
                     android:id="@+id/textView5"
@@ -452,6 +447,9 @@
                     android:text="Candidate"
                     android:textColor="@android:color/black"
                     android:textSize="18sp"
+                    app:layout_constraintEnd_toStartOf="@+id/textView7"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/MPDEMask"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textView22" />
 
@@ -459,11 +457,13 @@
                     android:id="@+id/textView7"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="50dp"
+                    android:layout_marginStart="35dp"
                     android:text="Party"
                     android:textColor="@android:color/black"
                     android:textSize="18sp"
                     app:layout_constraintBottom_toBottomOf="@+id/textView5"
+                    app:layout_constraintEnd_toStartOf="@+id/textView9"
+                    app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toEndOf="@+id/textView5"
                     app:layout_constraintTop_toTopOf="@+id/textView5" />
 
@@ -471,11 +471,15 @@
                     android:id="@+id/textView9"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="50dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="35dp"
                     android:text="Votes"
                     android:textColor="@android:color/black"
                     android:textSize="18sp"
                     app:layout_constraintBottom_toBottomOf="@+id/textView7"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/MPDEMask"
+                    app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toEndOf="@+id/textView7" />
 
                 <TextView

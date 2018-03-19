@@ -316,9 +316,6 @@ public class MPDetails extends AppCompatActivity {
         else if (election.CandidateOneParty.equals("Lab")){
             Block1.setBackgroundColor(Color.rgb(146,0,13));
         }
-        else if (election.CandidateOneParty.equals("Lab")){
-            Block1.setBackgroundColor(Color.rgb(146,0,14));
-        }
         else if (election.CandidateOneParty.equals("LD")){
             Block1.setBackgroundColor(Color.rgb(253,187,48));
         }
@@ -340,15 +337,16 @@ public class MPDetails extends AppCompatActivity {
         else if (election.CandidateOneParty.equals("Speaker")){
             Block1.setBackgroundColor(Color.rgb(0,0,0));
         }
+        else if (election.CandidateOneParty.equals("UKIP")){
+            Block1.setBackgroundColor(Color.rgb(112,20,122));
+        }
+        else {Block1.setBackgroundColor(Color.rgb(0,0,0));}
         Party2.setText(election.CandidateTwoParty);
         if(election.CandidateTwoParty.equals("Con")) {
             Block2.setBackgroundColor(Color.rgb(0,135, 220));
         }
         else if (election.CandidateTwoParty.equals("Lab")){
             Block2.setBackgroundColor(Color.rgb(146,0,13));
-        }
-        else if (election.CandidateTwoParty.equals("Lab")){
-            Block2.setBackgroundColor(Color.rgb(146,0,14));
         }
         else if (election.CandidateTwoParty.equals("LD")){
             Block2.setBackgroundColor(Color.rgb(253,187,48));
@@ -371,15 +369,16 @@ public class MPDetails extends AppCompatActivity {
         else if (election.CandidateTwoParty.equals("Speaker")){
             Block2.setBackgroundColor(Color.rgb(0,0,0));
         }
+        else if (election.CandidateOneParty.equals("UKIP")){
+            Block2.setBackgroundColor(Color.rgb(112,20,122));
+        }
+        else {Block2.setBackgroundColor(Color.rgb(0,0,0));}
         Party3.setText(election.CandidateThreeParty);
         if(election.CandidateThreeParty.equals("Con")) {
             Block3.setBackgroundColor(Color.rgb(0,135, 220));
         }
         else if (election.CandidateThreeParty.equals("Lab")){
             Block3.setBackgroundColor(Color.rgb(146,0,13));
-        }
-        else if (election.CandidateThreeParty.equals("Lab")){
-            Block3.setBackgroundColor(Color.rgb(146,0,14));
         }
         else if (election.CandidateThreeParty.equals("LD")){
             Block3.setBackgroundColor(Color.rgb(253,187,48));
@@ -402,15 +401,17 @@ public class MPDetails extends AppCompatActivity {
         else if (election.CandidateThreeParty.equals("Speaker")){
             Block3.setBackgroundColor(Color.rgb(0,0,0));
         }
+        else if (election.CandidateOneParty.equals("UKIP")){
+            Block3.setBackgroundColor(Color.rgb(112,20,122));
+        }
+        else {Block3.setBackgroundColor(Color.rgb(0,0,0));}
         Party4.setText(election.CandidateFourParty);
+        if(election.CandidateFourParty != null){
         if(election.CandidateFourParty.equals("Con")) {
             Block4.setBackgroundColor(Color.rgb(0,135, 220));
         }
         else if (election.CandidateFourParty.equals("Lab")){
             Block4.setBackgroundColor(Color.rgb(146,0,13));
-        }
-        else if (election.CandidateFourParty.equals("Lab")){
-            Block4.setBackgroundColor(Color.rgb(146,0,14));
         }
         else if (election.CandidateFourParty.equals("LD")){
             Block4.setBackgroundColor(Color.rgb(253,187,48));
@@ -433,6 +434,7 @@ public class MPDetails extends AppCompatActivity {
         else if (election.CandidateFourParty.equals("Speaker")){
             Block4.setBackgroundColor(Color.rgb(0,0,0));
         }
+        else {Block4.setBackgroundColor(Color.rgb(0,0,0));}}
         if(election.CandidateFiveParty != null){
         Party5.setText(election.CandidateFiveParty);
         if(election.CandidateFiveParty.equals("Con")) {
@@ -440,9 +442,6 @@ public class MPDetails extends AppCompatActivity {
         }
         else if (election.CandidateFiveParty.equals("Lab")){
             Block5.setBackgroundColor(Color.rgb(146,0,13));
-        }
-        else if (election.CandidateFiveParty.equals("Lab")){
-            Block5.setBackgroundColor(Color.rgb(146,0,14));
         }
         else if (election.CandidateFiveParty.equals("LD")){
             Block5.setBackgroundColor(Color.rgb(253,187,48));
@@ -464,7 +463,11 @@ public class MPDetails extends AppCompatActivity {
         }
         else if (election.CandidateFiveParty.equals("Speaker")){
             Block5.setBackgroundColor(Color.rgb(0,0,0));
-        }}
+        }
+        else if (election.CandidateOneParty.equals("UKIP")){
+            Block5.setBackgroundColor(Color.rgb(112,20,122));
+        }
+        else {Block5.setBackgroundColor(Color.rgb(0,0,0));}}
         Votes1.setText(election.CandidateOneVotes);
         Votes2.setText(election.CandidateTwoVotes);
         Votes3.setText(election.CandidateThreeVotes);

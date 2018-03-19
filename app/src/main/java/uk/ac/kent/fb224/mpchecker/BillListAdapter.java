@@ -1,6 +1,7 @@
 package uk.ac.kent.fb224.mpchecker;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,7 +31,10 @@ public class BillListAdapter extends RecyclerView.Adapter<BillListAdapter.ViewHo
         private View.OnClickListener onClick = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //todo: onclick for bill details intent
+                int position = BillListAdapter.ViewHolder.this.getLayoutPosition();
+                Intent intent = new Intent(v.getContext(), BillDetails.class);
+                intent.putExtra("Bill_Position", position);
+                context.startActivity(intent);
             }
         };
         public ViewHolder(View itemView) {

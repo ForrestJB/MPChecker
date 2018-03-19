@@ -1,29 +1,13 @@
 
 package uk.ac.kent.fb224.mpchecker;
-import android.os.AsyncTask;
-import android.os.DropBoxManager;
-import android.util.Log;
 import android.util.Xml;
-import android.widget.Switch;
-
-import com.android.volley.Cache;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Forrest on 08/03/2018.
