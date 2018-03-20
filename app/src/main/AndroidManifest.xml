@@ -27,6 +27,10 @@
             android:windowSoftInputMode="stateHidden"/>
         <activity android:name=".MPDetails"
             android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar" />
+        <activity android:name=".BillDetails"
+            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar" />
+        <activity android:name=".BillVotes"
+            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar" />
     </application>
 
 </manifest>

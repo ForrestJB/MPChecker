@@ -3,9 +3,7 @@ package uk.ac.kent.fb224.mpchecker;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.util.SortedList;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -50,10 +48,10 @@ public class MPListAdapter extends RecyclerView.Adapter<MPListAdapter.ViewHolder
         };
         public ViewHolder(View itemView) {
             super(itemView);
-            MPThumb = itemView.findViewById(R.id.MPThumb);
-            MPPartyColour = itemView.findViewById(R.id.MPPartyColour);
-            MPName = itemView.findViewById(R.id.MPName);
-            MPPartyName = itemView.findViewById(R.id.MPPartyName);
+            MPThumb = itemView.findViewById(R.id.BVMPThumb);
+            MPPartyColour = itemView.findViewById(R.id.BVMPPartyColour);
+            MPName = itemView.findViewById(R.id.BVMPName);
+            MPPartyName = itemView.findViewById(R.id.BVMPPartyName);
             MPConName = itemView.findViewById(R.id.MPConName);
             MPRole = itemView.findViewById(R.id.MPRole);
             FavButton = itemView.findViewById(R.id.MPFav);

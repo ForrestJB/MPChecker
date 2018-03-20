@@ -31,7 +31,7 @@ public class BillListAdapter extends RecyclerView.Adapter<BillListAdapter.ViewHo
         private View.OnClickListener onClick = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int position = BillListAdapter.ViewHolder.this.getLayoutPosition();
+                int position = ViewHolder.this.getLayoutPosition();
                 Intent intent = new Intent(v.getContext(), BillDetails.class);
                 intent.putExtra("Bill_Position", position);
                 context.startActivity(intent);
@@ -47,6 +47,7 @@ public class BillListAdapter extends RecyclerView.Adapter<BillListAdapter.ViewHo
         }
     }
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
+        context = parent.getContext();
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.bill_card_layout, parent, false);
         BillListAdapter.ViewHolder vh = new BillListAdapter.ViewHolder(v);
         return vh;

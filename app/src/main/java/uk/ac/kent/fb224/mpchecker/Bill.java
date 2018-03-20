@@ -16,26 +16,6 @@ public class Bill {
     int Ayes;
     int Noes;
     int Abstains;
-    int LabourAyes = 0;
-    int LabourNoes= 0;
-    int LabourAbstains=0;
-    int ConservativeAyes=0;
-    int ConservativeNoes=0;
-    int ConservativeAbstains=0;
-    int LibDemAyes=0;
-    int LibDemNoes=0;
-    int LibDemAbstains=0;
-    int SNPAyes=0;
-    int SNPNoes=0;
-    int SNPAbstains=0;
-    int PlaidCymruAyes=0;
-    int PlaidCymruNoes=0;
-    int PlaidCymruAbstains=0;
-    int GreenAyes=0;
-    int GreenNoes=0;
-    int GreenAbstains=0;
-    int DUPAyes=0;
-    int DUPNoes=0;
-    int DUPAbstains=0;
-    //todo: can the above be changed for a list of "vote" objects that hold the details of who, what party, and what kind of vote?
+   ArrayList<Vote> VoteAyeList = new ArrayList<Vote>();
+   ArrayList<Vote> VoteNoeList = new ArrayList<Vote>();
 }

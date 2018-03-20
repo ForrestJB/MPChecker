@@ -117,7 +117,7 @@ public class BillActivity extends AppCompatActivity {
     public void GetVoteResult (final String id){
         NetManager NetMgr = NetManager.getInstance(getApplicationContext());
         RequestQueue requestQueue = NetMgr.requestQueue;//fetch the request queue
-        String URL = "http://lda.data.parliament.uk/commonsdivisions/id/"+id+".json";
+        final String URL = "http://lda.data.parliament.uk/commonsdivisions/id/"+id+".json";
         JsonObjectRequest request2 = new JsonObjectRequest(Request.Method.GET, URL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -131,21 +131,18 @@ public class BillActivity extends AppCompatActivity {
                     for (int i = 0; i < AbstainArray.length(); i++) {
                         JSONObject AbCont = AbstainArray.getJSONObject(i);
                         AbstainCount = AbCont.getInt("_value");
-                        Log.d("abstains", Integer.toString(AbstainCount));
                     }
                     JSONArray AyeArray = PrimTopic.getJSONArray("AyesCount");
                     int AyeCount = 0;
                     for (int i = 0; i < AyeArray.length(); i++) {
                         JSONObject AyeCont = AyeArray.getJSONObject(i);
                         AyeCount = AyeCont.getInt("_value");
-                        Log.d("Ayes", Integer.toString(AyeCount));
                     }
                     JSONArray NoeArray = PrimTopic.getJSONArray("Noesvotecount");
                     int NoeCount = 0;
                     for (int i = 0; i < NoeArray.length(); i++) {
                         JSONObject NoeCont = NoeArray.getJSONObject(i);
                         NoeCount = NoeCont.getInt("_value");
-                        Log.d("Noes", Integer.toString(NoeCount));
                     }
                     NewBill.Abstains = AbstainCount;
                     NewBill.Ayes = AyeCount;
@@ -153,8 +150,7 @@ public class BillActivity extends AppCompatActivity {
                     NewBill.Name = PrimTopic.getString("title");
                     JSONObject Dateobj = PrimTopic.getJSONObject("date");
                     NewBill.Date = Dateobj.getString("_value");
-                    Log.d("title", NewBill.Name);
-
+                    GetVotes(URL, NewBill);
                     Counter++;
                     if(Counter == 30){
                         MaskText = findViewById(R.id.BillLoadText);
@@ -233,7 +229,7 @@ public class BillActivity extends AppCompatActivity {
         NetManager.getInstance(BillActivity.this).BillList = FilteredList;
         adapter.notifyDataSetChanged();
     }
-    public ArrayList GetVotes(JSONObject main, String url){
+    public void GetVotes(String url, final Bill bill){
         final ArrayList<Vote> VoteList = new ArrayList<Vote>();
         NetManager NetMgr = NetManager.getInstance(getApplicationContext());
         RequestQueue requestQueue = NetMgr.requestQueue;//fetch the request queue
@@ -249,14 +245,19 @@ public class BillActivity extends AppCompatActivity {
                         final Vote vote = new Vote();
                         JSONObject Member = Votes.getJSONObject(i);
                         String VoteParty = Member.getString("memberParty");
-                        Log.d("party", VoteParty);
                         JSONObject Memberobj = Member.getJSONObject("memberPrinted");
                         String MemberName = Memberobj.getString("_value");
-                        Log.d("MP name", MemberName);
                         String VoteCont = Member.getString("type");
                         String VoteResult = VoteCont.substring(38);
-                        Log.d("vote", VoteResult);
-                        VoteList.add(vote);
+                        vote.Name = MemberName;
+                        vote.Party = VoteParty;
+                        vote.VoteType = VoteResult;
+                        if (VoteResult.equals("Aye")){
+                            bill.VoteAyeList.add(vote);
+                        } else if (VoteResult.equals("Noe")){
+                            bill.VoteNoeList.add(vote);
+                        }
+
                 }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -269,7 +270,7 @@ public class BillActivity extends AppCompatActivity {
            //todo error response
             }
         });
-        return  VoteList;
+        requestQueue.add(request3);
     }
 }
 
