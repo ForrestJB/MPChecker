@@ -64,7 +64,6 @@ public class BillDetails extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), BillVotes.class);
                 intent.putExtra("Bill_Position", BillPosition);
-                intent.putExtra("Votes_Selected", "Noes");
                 startActivity(intent);
             }
         });
@@ -73,7 +72,6 @@ public class BillDetails extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), BillVotes.class);
                 intent.putExtra("Bill_Position", BillPosition);
-                intent.putExtra("Votes_Selected", "Ayes");
                 startActivity(intent);
             }
         });

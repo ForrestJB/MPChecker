@@ -252,9 +252,9 @@ public class BillActivity extends AppCompatActivity {
                         vote.Name = MemberName;
                         vote.Party = VoteParty;
                         vote.VoteType = VoteResult;
-                        if (VoteResult.equals("Aye")){
+                        if (VoteResult.equals("AyeVote")){
                             bill.VoteAyeList.add(vote);
-                        } else if (VoteResult.equals("Noe")){
+                        } else if (VoteResult.equals("NoVote")){
                             bill.VoteNoeList.add(vote);
                         }
 
@@ -267,6 +267,7 @@ public class BillActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                Log.d("error", "vote fetch net error");
            //todo error response
             }
         });
