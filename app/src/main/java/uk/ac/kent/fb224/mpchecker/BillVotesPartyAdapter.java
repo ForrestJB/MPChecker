@@ -20,7 +20,7 @@ import java.util.ArrayList;
  */
 
 public class BillVotesPartyAdapter  extends RecyclerView.Adapter<BillVotesPartyAdapter.ViewHolder>{
-    private Bill bill;
+    public int BillPosition;
     private Context context;
     public ArrayList<String> PartyList;
     public ArrayList<Vote> VoteList;
@@ -33,7 +33,11 @@ public class BillVotesPartyAdapter  extends RecyclerView.Adapter<BillVotesPartyA
         private View.OnClickListener onClick = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //todo onclick for partys
+                int position = ViewHolder.this.getLayoutPosition();
+                Intent intent = new Intent(v.getContext(), BillPartyVotes.class);
+                intent.putExtra("Party", PartyList.get(position));
+                intent.putExtra("BillPosition", BillPosition);
+                context.startActivity(intent);
             }
         };
         public ViewHolder(View itemView) {

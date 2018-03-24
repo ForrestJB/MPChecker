@@ -21,16 +21,12 @@ public class BillVotes extends AppCompatActivity {
     private boolean NameSelected = false;
     private RecyclerView PartyAyeRView;
     private RecyclerView PartyNoeRView;
-    private RecyclerView NameAyeRView;
-    private RecyclerView NameNowRView;
     private BillVotesNameAdapter NAadapter;
     private BillVotesNameAdapter NNadapter;
     private BillVotesPartyAdapter PAadapter;
     private BillVotesPartyAdapter PNadapter;
     private LinearLayoutManager layoutManager1;
     private LinearLayoutManager layoutManager2;
-    private LinearLayoutManager layoutManager3;
-    private LinearLayoutManager layoutManager4;
     private ArrayList<String> PAyeList = new ArrayList<>();
     private ArrayList<String> PNoeList = new ArrayList<>();
     private TextView Title;
@@ -50,8 +46,6 @@ public class BillVotes extends AppCompatActivity {
 
         PartyAyeRView = findViewById(R.id.BVPAyesRView);
         PartyNoeRView = findViewById(R.id.BVPNoesRView);
-        NameAyeRView = findViewById(R.id.BVNAyesRView);
-        NameNowRView = findViewById(R.id.BVNNoesRView);
         Ayes = findViewById(R.id.BVAyes);
         Noes = findViewById(R.id.BVNoes);
         Total = findViewById(R.id.BVTotalVotes);
@@ -98,7 +92,6 @@ public class BillVotes extends AppCompatActivity {
             }
             if(add==true){
                 PAyeList.add(vote.Party);
-                Log.d("acticity parties", vote.Party);
             }
         }
         for(int i=0; i<bill.VoteNoeList.size();i++){
@@ -125,6 +118,8 @@ public class BillVotes extends AppCompatActivity {
         }
         PAadapter.PartyList = PAyeList;
         PNadapter.PartyList = PNoeList;
+        PAadapter.BillPosition = BillPosition;
+        PNadapter.BillPosition = BillPosition;
         PAadapter.VoteList = bill.VoteAyeList;
         PNadapter.VoteList = bill.VoteNoeList;
         PAadapter.notifyDataSetChanged();

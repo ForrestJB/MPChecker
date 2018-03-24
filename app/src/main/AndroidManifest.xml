@@ -31,6 +31,8 @@
             android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar" />
         <activity android:name=".BillVotes"
             android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar" />
+        <activity android:name=".BillPartyVotes"
+            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar" />
     </application>
 
 </manifest>

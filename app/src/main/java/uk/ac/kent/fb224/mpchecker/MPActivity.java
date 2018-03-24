@@ -171,14 +171,14 @@ public class MPActivity extends AppCompatActivity {
             }
         };
         mMPReference.addValueEventListener(MPListener);
-        if(k==649){
-            MaskText = findViewById(R.id.MPLoadText);
-            MaskImage = findViewById(R.id.MPLoadMask);
-            MaskSpinner = findViewById(R.id.MPLoadMaskSpinner);
-            MaskImage.setVisibility(View.GONE);
-            MaskSpinner.setVisibility(View.GONE);
-            MaskText.setVisibility(View.GONE);
-        }
+//        if(k==649){ todo: this does not proc when the network is finished, but procs instantly, will need to be rethought
+//            MaskText = findViewById(R.id.MPLoadText);
+//            MaskImage = findViewById(R.id.MPLoadMask);
+//            MaskSpinner = findViewById(R.id.MPLoadMaskSpinner);
+//            MaskImage.setVisibility(View.GONE);
+//            MaskSpinner.setVisibility(View.GONE);
+//            MaskText.setVisibility(View.GONE);
+//        }
     }
         adapter.notifyDataSetChanged();
     }

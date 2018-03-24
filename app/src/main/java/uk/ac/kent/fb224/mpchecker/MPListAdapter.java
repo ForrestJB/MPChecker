@@ -21,8 +21,9 @@ import java.util.ArrayList;
  */
 
 public class MPListAdapter extends RecyclerView.Adapter<MPListAdapter.ViewHolder> {
-    ImageView MPPartyColour;
+    private ImageView MPPartyColour;
     private Context context;
+
     @Override
     public void setHasStableIds(boolean hasStableIds) {
         super.setHasStableIds(hasStableIds);
