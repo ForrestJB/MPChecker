@@ -173,8 +173,8 @@ public class MPDetails extends AppCompatActivity {
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         BillRecyclerView.setLayoutManager(layoutManager);
         adapter = new MPDetailsBillAdapter();
-        NetManager.getInstance(this).MPDetailsBillList.clear();
-        adapter.BillList = NetManager.getInstance(this).MPDetailsBillList;
+        NetManager.getInstance(this).BillList.clear();
+        adapter.BillList = NetManager.getInstance(this).BillList;
         BillRecyclerView.setAdapter(adapter);
         final NetManager NetMgr = NetManager.getInstance(getApplicationContext());
         if (MP.MPImageUrl != null) {//check to ensure there is an image to prevent crashes if the URL is null
@@ -602,12 +602,17 @@ public class MPDetails extends AppCompatActivity {
                             vote.Name = MemberName;
                             vote.Party = VoteParty;
                             vote.VoteType = VoteResult;
+                            if (VoteResult.equals("AyeVote")){
+                                NewBill.VoteAyeList.add(vote);
+                            } else if (VoteResult.equals("NoVote")){
+                                NewBill.VoteNoeList.add(vote);
+                            }
                             if(vote.Name.equals(MP.MPName)){
                                 NewBill.MPVote = vote.VoteType;
                                 break;
                             }
                         }
-                        NetManager.getInstance(MPDetails.this).MPDetailsBillList.add(NewBill);
+                        NetManager.getInstance(MPDetails.this).BillList.add(NewBill);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

@@ -34,6 +34,7 @@ public class BillPartyVotes extends AppCompatActivity{
     private LinearLayoutManager layoutManager1;
     private LinearLayoutManager layoutManager2;
     private TextView Title;
+    private TextView VoteB;
     private TextView Ayes;
     private TextView Noes;
     private TextView Total;
@@ -45,7 +46,7 @@ public class BillPartyVotes extends AppCompatActivity{
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.bill_votes);
+        setContentView(R.layout.bill_votes_party);
 
         Intent intent = getIntent();
         Party = intent.getStringExtra("Party");
@@ -59,6 +60,7 @@ public class BillPartyVotes extends AppCompatActivity{
         Noes = findViewById(R.id.BVNoes);
         Total = findViewById(R.id.BVTotalVotes);
         Title = findViewById(R.id.BVTitle);
+        VoteB = findViewById(R.id.BVVoteBreakdown);
 
         NAadapter = new BillVotesNameAdapter();
         NNadapter = new BillVotesNameAdapter();
@@ -87,6 +89,12 @@ public class BillPartyVotes extends AppCompatActivity{
         }
 
         NetManager NetMgr = NetManager.getInstance(getApplicationContext());
+        NetManager.getInstance(this).DetailsConList = NetManager.getInstance(this).conList;
+        for(int i=0;i<NetMgr.conList.size();i++){//set the index of each MP in the main list as a variable of that mp (this is important for use in the adapter)
+            if(i==121){}else {
+                NetMgr.conList.get(i).pos = i;
+            }
+        }
         for(int i=0;i<AyeVotes.size();i++){//get the full details for all of the yes voting MP's found earlier
             Vote tempVote = AyeVotes.get(i);
             for(int j=0;j<NetMgr.conList.size();j++){
@@ -94,7 +102,6 @@ public class BillPartyVotes extends AppCompatActivity{
                 }else{
                 Constituency tempCon = NetMgr.conList.get(j);
                 if(tempVote.Name.equals(tempCon.MPName)){
-                    Log.d("MP added", tempCon.MPName);
                     AyeCons.add(tempCon);
                     break;
                 }
@@ -114,7 +121,15 @@ public class BillPartyVotes extends AppCompatActivity{
             }}
         }
         NAadapter.MPList = AyeCons;
+        NAadapter.isNoes = false;
         NNadapter.MPList = NoeCons;
+        NNadapter.isNoes = true;
+
+        Title.setText(bill.Name);
+        Total.append(" "+(AyeCons.size()+NoeCons.size()));
+        Ayes.append(" "+AyeCons.size());
+        Noes.append(" "+NoeCons.size());
+        VoteB.setText(Party+" Vote Breakdown:");
         NAadapter.notifyDataSetChanged();
         NNadapter.notifyDataSetChanged();
     }

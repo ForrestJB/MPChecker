@@ -1,6 +1,7 @@
 package uk.ac.kent.fb224.mpchecker;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 public class BillVotesNameAdapter extends RecyclerView.Adapter<BillVotesNameAdapter.ViewHolder>{
     public ArrayList<Constituency> MPList = new ArrayList<>();
     private Context context;
+    public boolean isNoes;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private NetworkImageView MPThumb;
@@ -27,12 +29,25 @@ public class BillVotesNameAdapter extends RecyclerView.Adapter<BillVotesNameAdap
         private TextView MPName;
         private TextView PartyName;
         private TextView ConName;
+
+        private View.OnClickListener onClick = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int position = ViewHolder.this.getLayoutPosition();
+                Constituency ClickedCon = MPList.get(position);
+                int Index = ClickedCon.pos;//this variable is what we set in billPartyVotes, and allows us to get the MP's position in the main list of Constituencies
+                Intent intent = new Intent(view.getContext(), MPDetails.class);
+                intent.putExtra("MP_POSITION", Index);
+                context.startActivity(intent);
+            }
+        };
         public ViewHolder(View itemView) {
             super(itemView);
             PartyColour = itemView.findViewById(R.id.BVMPPartyColour);
             MPName = itemView.findViewById(R.id.BVMPName);
             PartyName = itemView.findViewById(R.id.BVMPPartyName);
             ConName = itemView.findViewById(R.id.BVMPCon);
+            this.itemView.setOnClickListener(onClick);
         }
     }
     @Override

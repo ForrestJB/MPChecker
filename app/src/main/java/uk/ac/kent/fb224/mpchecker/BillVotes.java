@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -18,7 +20,6 @@ import java.util.ArrayList;
 public class BillVotes extends AppCompatActivity {
     private int BillPosition;
     private Bill bill;
-    private boolean NameSelected = false;
     private RecyclerView PartyAyeRView;
     private RecyclerView PartyNoeRView;
     private BillVotesNameAdapter NAadapter;
@@ -29,10 +30,15 @@ public class BillVotes extends AppCompatActivity {
     private LinearLayoutManager layoutManager2;
     private ArrayList<String> PAyeList = new ArrayList<>();
     private ArrayList<String> PNoeList = new ArrayList<>();
+    private ArrayList<Constituency> AllAyeList = new ArrayList<>();
+    private ArrayList<Constituency> AllNoeList = new ArrayList<>();
     private TextView Title;
     private TextView Ayes;
     private TextView Noes;
     private TextView Total;
+    private Button PartyButton;
+    private Button NameButton;
+    private boolean isNameSelected = false;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +56,8 @@ public class BillVotes extends AppCompatActivity {
         Noes = findViewById(R.id.BVNoes);
         Total = findViewById(R.id.BVTotalVotes);
         Title = findViewById(R.id.BVTitle);
+        PartyButton = findViewById(R.id.BVPartyButton);
+        NameButton = findViewById(R.id.BVNameButton);
 
         Ayes.append(" "+Integer.toString(bill.Ayes));
         Noes.append(" "+Integer.toString(bill.Noes));
@@ -116,6 +124,31 @@ public class BillVotes extends AppCompatActivity {
                 PNoeList.add(vote.Party);
             }
         }
+        NetManager NetMgr = NetManager.getInstance(getApplicationContext());
+        for(int i=0;i<bill.VoteAyeList.size();i++){//get the full details for all of the yes voting MP's found earlier
+            Vote tempVote = bill.VoteAyeList.get(i);
+            for(int j=0;j<NetMgr.conList.size();j++){
+                if(j==121){
+                }else{
+                    Constituency tempCon = NetMgr.conList.get(j);
+                    if(tempVote.Name.equals(tempCon.MPName)){
+                        AllAyeList.add(tempCon);
+                        break;
+                    }
+                }}
+        }
+        for(int i=0;i<bill.VoteNoeList.size();i++){//get the full details for all of the yes voting MP's found earlier
+            Vote tempVote = bill.VoteNoeList.get(i);
+            for(int j=0;j<NetMgr.conList.size();j++){
+                if(j==121){
+                }else{
+                    Constituency tempCon = NetMgr.conList.get(j);
+                    if(tempVote.Name.equals(tempCon.MPName)){
+                        AllNoeList.add(tempCon);
+                        break;
+                    }
+                }}
+        }
         PAadapter.PartyList = PAyeList;
         PNadapter.PartyList = PNoeList;
         PAadapter.BillPosition = BillPosition;
@@ -124,5 +157,38 @@ public class BillVotes extends AppCompatActivity {
         PNadapter.VoteList = bill.VoteNoeList;
         PAadapter.notifyDataSetChanged();
         PNadapter.notifyDataSetChanged();
+        NNadapter.MPList = AllNoeList;
+        NAadapter.MPList = AllAyeList;
+
+        PartyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(isNameSelected==false){
+                } else{
+                    PartyButton.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+                    NameButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                    PartyAyeRView.setAdapter(PAadapter);
+                    PartyNoeRView.setAdapter(PNadapter);
+                    PAadapter.notifyDataSetChanged();
+                    PNadapter.notifyDataSetChanged();
+                    isNameSelected=false;
+                }
+            }
+        });
+        NameButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(isNameSelected== true){
+                }else{
+                    NameButton.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+                    PartyButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                    PartyAyeRView.setAdapter(NAadapter);
+                    PartyNoeRView.setAdapter(NNadapter);
+                    NAadapter.notifyDataSetChanged();
+                    NNadapter.notifyDataSetChanged();
+                    isNameSelected=true;
+                }
+            }
+        });
     }
 }

@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -59,7 +60,7 @@
                     android:layout_marginTop="16dp"
                     android:text="Vote Breakdown"
                     android:textColor="@android:color/background_dark"
-                    android:textSize="16sp"
+                    android:textSize="18sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/BVTitle" />
@@ -76,7 +77,7 @@
                     android:textSize="16sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/BVNameButton" />
+                    app:layout_constraintTop_toBottomOf="@+id/BVVoteBreakdown" />
 
                 <TextView
                     android:id="@+id/BVTitle"
@@ -110,34 +111,6 @@
                     app:layout_constraintEnd_toStartOf="@+id/imageView16"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/BVTotalVotes" />
-
-                <Button
-                    android:id="@+id/BVNameButton"
-                    style="@style/Widget.AppCompat.Button.Borderless"
-                    android:layout_width="0dp"
-                    android:layout_height="37dp"
-                    android:layout_marginTop="8dp"
-                    android:background="@color/colorPrimary"
-                    android:text="By Name"
-                    android:textColor="@android:color/background_light"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/BVPartyButton"
-                    app:layout_constraintTop_toBottomOf="@+id/BVVoteBreakdown" />
-
-                <Button
-                    android:id="@+id/BVPartyButton"
-                    style="@style/Widget.AppCompat.Button.Borderless"
-                    android:layout_width="0dp"
-                    android:layout_height="37dp"
-                    android:layout_marginTop="8dp"
-                    android:background="@color/colorAccent"
-                    android:text="By Party"
-                    android:textColor="@android:color/background_light"
-                    app:layout_constraintEnd_toStartOf="@+id/BVNameButton"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/BVVoteBreakdown" />
 
             </android.support.constraint.ConstraintLayout>
 
