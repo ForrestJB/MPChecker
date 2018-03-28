@@ -20,8 +20,10 @@ import com.google.firebase.database.ValueEventListener;
 public class LandingActivity extends AppCompatActivity {
     public Button Bills;
     public Button MPs;
+    public Button Find;
+    public Button Postcode;
+    public Button con;
     private DatabaseReference mMPReference;
-    public Button News;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,7 +31,9 @@ public class LandingActivity extends AppCompatActivity {
 
         Bills = findViewById(R.id.MainBillButton);
         MPs = findViewById(R.id.MainMpButton);
-        News = findViewById(R.id.MainNewsButton);
+        Find = findViewById(R.id.MainFindButton);
+        Postcode = findViewById(R.id.MainPostcodeButton);
+        con = findViewById(R.id.MainConButton);
 
         for(int k=0;k<=649;k++) {//todo this is kinda a janky fix, but is it ok?
             mMPReference = FirebaseDatabase.getInstance().getReference().child("Raw Data").child("MP").child(Integer.toString(k));
@@ -45,6 +49,7 @@ public class LandingActivity extends AppCompatActivity {
                 }
             };
             mMPReference.addValueEventListener(MPListener);
+            //todo perhaps an "if (k=649) remove mask" for a loading page?
         }
 
         Bills.setOnClickListener(new View.OnClickListener() {
@@ -61,10 +66,25 @@ public class LandingActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        News.setOnClickListener(new View.OnClickListener() {
+        Find.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //todo: News onclick after activity is implemented
+                Postcode.setVisibility(View.VISIBLE);
+                con.setVisibility(View.VISIBLE);
+            }
+        });
+        Postcode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), FindActivityPostcode.class);
+                startActivity(intent);
+            }
+        });
+        con.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), FindActivityCon.class);
+                startActivity(intent);
             }
         });
     }
