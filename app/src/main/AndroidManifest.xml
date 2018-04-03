@@ -6,7 +6,7 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/logo_hdpi"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
         <activity
@@ -33,6 +33,12 @@
             android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar" />
         <activity android:name=".BillPartyVotes"
             android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar" />
+        <activity android:name=".FindActivityPostcode"
+            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar" />
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
     </application>
 
 </manifest>
