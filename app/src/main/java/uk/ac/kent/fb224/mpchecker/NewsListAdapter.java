@@ -1,6 +1,8 @@
 package uk.ac.kent.fb224.mpchecker;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,12 +22,22 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
         TextView Title;
         TextView Date;
         TextView Category;
+        private View.OnClickListener onClick = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int position = ViewHolder.this.getLayoutPosition();
+                News news = NewsList.get(position);
+                Intent Browser = new Intent(Intent.ACTION_VIEW, Uri.parse(news.URL));
+                context.startActivity(Browser);
+            }
+        };
         public ViewHolder(View itemView) {
             super(itemView);
 
             Title = itemView.findViewById(R.id.NewsTitle);
             Date = itemView.findViewById(R.id.NewsDateTime);
             Category = itemView.findViewById(R.id.NewsCategory);
+            this.itemView.setOnClickListener(onClick);
         }
     }
     @Override

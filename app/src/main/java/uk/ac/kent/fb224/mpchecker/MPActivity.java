@@ -5,10 +5,13 @@
 
 package uk.ac.kent.fb224.mpchecker;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -48,7 +51,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MPActivity extends AppCompatActivity {
+public class MPActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
     private DatabaseReference mDatabase;
     private DatabaseReference mMPReference;
     private RecyclerView MPRecyclerView;
@@ -64,6 +67,9 @@ public class MPActivity extends AppCompatActivity {
     private TextView MaskText;
     private Boolean IsFavOpen = false;
     public Election election;
+    private ActionBarDrawerToggle toggle;
+    private android.support.v7.widget.Toolbar toolbar;
+    private DrawerLayout drawer;
     int j = 0;
     public int counter = 0;//this is for removing the loading mask when all MPs have been loaded from the JSON
     @Override
@@ -72,20 +78,19 @@ public class MPActivity extends AppCompatActivity {
         setContentView(R.layout.mp_layout);
 
         mDatabase = FirebaseDatabase.getInstance().getReference(); // get a Reference for the current database
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close);
-        mDrawerLayout.addDrawerListener(mToggle);
-        mToggle.syncState();
+        toolbar = findViewById(R.id.toolbar);
+
+        setSupportActionBar(toolbar);
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
-        NavigationView navigationView = findViewById(R.id.MPNavView);
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                //handle Nav Drawer clicks here with a switch case
-                return false;
-            }
-        });
+        toggle = new ActionBarDrawerToggle(
+                this, drawer, R.string.navigation_bar_open, R.string.navigation_bar_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
 
         MPRecyclerView = (RecyclerView) findViewById(R.id.MPListView);
         layoutManager = new LinearLayoutManager(this);
@@ -182,6 +187,32 @@ public class MPActivity extends AppCompatActivity {
 //    }
         adapter.notifyDataSetChanged();
     }
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        if(id == R.id.nav_home){
+            Intent intent = new Intent(this, LandingActivity.class);
+            startActivity(intent);
+        } else if(id == R.id.nav_MPs){
+            Intent intent = new Intent(this, MPActivity.class);
+            startActivity(intent);
+        } if(id == R.id.nav_Bills){
+            Intent intent = new Intent(this, BillActivity.class);
+            startActivity(intent);
+        } if(id == R.id.nav_reset){
+            SharedPreferences sharedPreferences = getSharedPreferences("Main_Pref", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.remove("First_Open");
+            editor.remove("User_MP");
+            editor.apply();
+            Intent intent = new Intent(this, LandingActivity.class);
+            startActivity(intent);
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
 public void addTextListener(String query){
                 query = query.toString().toLowerCase();
                 ArrayList<Constituency> list = new ArrayList<Constituency>();
@@ -211,7 +242,7 @@ public void addTextListener(String query){
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-//        inflater.inflate(R.menu.main_nav_drawer, menu);
+        inflater.inflate(R.menu.main_nav_drawer, menu);
         inflater.inflate(R.menu.menu_main, menu);
 
         final MenuItem searchItem = menu.findItem(R.id.action_search);
@@ -237,9 +268,10 @@ public void addTextListener(String query){
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if(mToggle.onOptionsItemSelected(item)){
-            return true;
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                drawer.openDrawer(GravityCompat.START);  // OPEN DRAWER
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }

@@ -1,9 +1,12 @@
 package uk.ac.kent.fb224.mpchecker;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -40,7 +43,7 @@ import java.util.ArrayList;
  * Created by Tree1 on 31/01/2018.
  */
 
-public class BillActivity extends AppCompatActivity {
+public class BillActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
     private RecyclerView BillRecyclerView;
     private RecyclerView MPRecyclerView;
     private LinearLayoutManager layoutManager;
@@ -56,25 +59,28 @@ public class BillActivity extends AppCompatActivity {
     private TextView MaskText;
     private ImageView MaskImage;
     private ProgressBar MaskSpinner;
+    private ActionBarDrawerToggle toggle;
+    private android.support.v7.widget.Toolbar toolbar;
+    private DrawerLayout drawer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bill_layout);
+
+        toolbar = findViewById(R.id.toolbar);
+
+        setSupportActionBar(toolbar);
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close);
-        mDrawerLayout.addDrawerListener(mToggle);
-        mToggle.syncState();
         getSupportActionBar().setHomeButtonEnabled(true);
-        NavigationView navigationView = findViewById(R.id.BillView);
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                //handle Nav Drawer clicks here with a switch case
-                return false;
-            }
-        });
+        toggle = new ActionBarDrawerToggle(
+                this, drawer, R.string.navigation_bar_open, R.string.navigation_bar_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
 
         BillRecyclerView = (RecyclerView) findViewById(R.id.BillListView);
         layoutManager = new LinearLayoutManager(this);
@@ -204,9 +210,10 @@ public class BillActivity extends AppCompatActivity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if(mToggle.onOptionsItemSelected(item)){
-            return true;
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                drawer.openDrawer(GravityCompat.START);  // OPEN DRAWER
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -272,6 +279,33 @@ public class BillActivity extends AppCompatActivity {
             }
         });
         requestQueue.add(request3);
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        if(id == R.id.nav_home){
+            Intent intent = new Intent(this, LandingActivity.class);
+            startActivity(intent);
+        } else if(id == R.id.nav_MPs){
+            Intent intent = new Intent(this, MPActivity.class);
+            startActivity(intent);
+        } if(id == R.id.nav_Bills){
+            Intent intent = new Intent(this, BillActivity.class);
+            startActivity(intent);
+        } if(id == R.id.nav_reset){
+            SharedPreferences sharedPreferences = getSharedPreferences("Main_Pref", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.remove("First_Open");
+            editor.remove("User_MP");
+            editor.apply();
+            Intent intent = new Intent(this, LandingActivity.class);
+            startActivity(intent);
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 }
 

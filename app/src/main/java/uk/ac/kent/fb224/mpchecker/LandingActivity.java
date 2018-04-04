@@ -5,18 +5,25 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -41,7 +48,7 @@ import java.util.ArrayList;
  * Created by Tree1 on 01/03/2018.
  */
 
-public class LandingActivity extends AppCompatActivity {
+public class LandingActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
     private TextView MPName;
     private TextView MPRole;
     private TextView MPCon;
@@ -54,6 +61,8 @@ public class LandingActivity extends AppCompatActivity {
     private LinearLayoutManager layoutManager;
     private RecyclerView NewsRView;
     private ImageView MPImage;
+    private ActionBarDrawerToggle toggle;
+    private android.support.v7.widget.Toolbar toolbar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -66,7 +75,19 @@ public class LandingActivity extends AppCompatActivity {
         MPRole = findViewById(R.id.LandMPRole);
         MPCon = findViewById(R.id.LandMPCon);
         MPImage = findViewById(R.id.LandMPImage);
+        toolbar = findViewById(R.id.toolbar);
 
+        setSupportActionBar(toolbar);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        toggle = new ActionBarDrawerToggle(
+                this, drawer, R.string.navigation_bar_open, R.string.navigation_bar_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
         if(NetManager.getInstance(LandingActivity.this).isLoaded==false){//if the list of MP's has not been loaded yet
             for(int k=0;k<=649;k++) {
                 mMPReference = FirebaseDatabase.getInstance().getReference().child("Raw Data").child("MP").child(Integer.toString(k));
@@ -143,6 +164,12 @@ public class LandingActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Network error, please check your internet connection", Toast.LENGTH_LONG).show();
         }
     };
+    public boolean onOptionsItemSelected(MenuItem item){
+        if(toggle.onOptionsItemSelected(item)){
+            return true;
+        } // if the search button is clicked, excecute the search code
+        return super.onOptionsItemSelected(item);
+    }
     private void GetNews(){
         Log.d("error", "called GetNews");
         String URL = "https://content.guardianapis.com/search?format=json&tag=politics/politics&api-key=e1b65d8f-a5df-49fc-9cf1-9a03e7128a29&page-size=30";
@@ -160,6 +187,7 @@ public class LandingActivity extends AppCompatActivity {
                         NewNews.Date = result.getString("webPublicationDate");
                         NewNews.Name = result.getString("webTitle");
                         NewNews.Category = result.getString("pillarName");
+                        NewNews.URL = result.getString("webUrl");
                         NewsList.add(NewNews);
                     }
                     adapter.NewsList = NewsList;
@@ -176,5 +204,32 @@ public class LandingActivity extends AppCompatActivity {
         }); requestQueue.add(request);
         mask.setVisibility(View.GONE);
         content.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        if(id == R.id.nav_home){
+            Intent intent = new Intent(this, LandingActivity.class);
+            startActivity(intent);
+        } else if(id == R.id.nav_MPs){
+            Intent intent = new Intent(this, MPActivity.class);
+            startActivity(intent);
+        } if(id == R.id.nav_Bills){
+            Intent intent = new Intent(this, BillActivity.class);
+            startActivity(intent);
+        } if(id == R.id.nav_reset){
+            SharedPreferences sharedPreferences = getSharedPreferences("Main_Pref", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.remove("First_Open");
+            editor.remove("User_MP");
+            editor.apply();
+            Intent intent = new Intent(this, LandingActivity.class);
+            startActivity(intent);
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 }

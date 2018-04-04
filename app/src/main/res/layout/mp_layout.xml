@@ -15,14 +15,20 @@
         android:layout_height="match_parent"
         tools:context="uk.ac.kent.fb224.mpchecker.MPActivity">
 
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/toolbar"></include>
+
         <android.support.constraint.ConstraintLayout
             android:id="@+id/Constraint2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="0dp"
+            android:layout_marginTop="8dp"
             android:padding="0dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
             <include
                 android:id="@+id/include"
@@ -59,12 +65,12 @@
     </android.support.constraint.ConstraintLayout>
 
     <android.support.design.widget.NavigationView
-        android:id="@+id/MPNavView"
+        android:id="@+id/nav_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
-        android:visibility="gone"
-        app:headerLayout="@layout/main_nav_header"
+        android:visibility="visible"
+        app:headerLayout="@layout/nav_header_main"
         app:menu="@menu/main_nav_drawer" />
 </android.support.v4.widget.DrawerLayout>

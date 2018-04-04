@@ -8,11 +8,11 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/logo_hdpi"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme.NoActionBar">
+        android:theme="@style/Theme.AppCompat">
         <activity
             android:name=".LandingActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,19 +20,24 @@
             </intent-filter>
         </activity>
         <activity android:name=".BillActivity"
-            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
             android:windowSoftInputMode="stateHidden"/>
         <activity android:name=".MPActivity"
-            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
             android:windowSoftInputMode="stateHidden"/>
         <activity android:name=".MPDetails"
-            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar" />
+            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar"
+            android:parentActivityName=".MPActivity"/>
         <activity android:name=".BillDetails"
-            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar" />
+            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar"
+            android:parentActivityName=".BillActivity"/>
         <activity android:name=".BillVotes"
-            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar" />
+            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar"
+            android:parentActivityName=".BillDetails"/>
+
         <activity android:name=".BillPartyVotes"
-            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar" />
+            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar"
+            android:parentActivityName=".BillVotes"/>
         <activity android:name=".FindActivityPostcode"
             android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar" />
 

@@ -8,4 +8,5 @@ public class News {
     public String Name;
     public String Category;
     public String Date;
+    public String URL;
 }
