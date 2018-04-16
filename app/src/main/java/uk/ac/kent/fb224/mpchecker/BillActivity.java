@@ -115,7 +115,8 @@ public class BillActivity extends AppCompatActivity implements NavigationView.On
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(), "Network error, please check your internet connection", Toast.LENGTH_LONG).show();//if there is a reponse error, notify the user
+                Toast.makeText(getApplicationContext(), "Network error, please check your internet connection and try again", Toast.LENGTH_LONG).show();//if there is a reponse error, notify the user
+                Log.d("bill Error", "get vote");
             }
         });
         requestQueue.add(request);
@@ -177,8 +178,8 @@ public class BillActivity extends AppCompatActivity implements NavigationView.On
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(), "Network error, please check your internet connection", Toast.LENGTH_LONG).show();//if there is a reponse error, notify the user
-
+                Toast.makeText(getApplicationContext(), "Network error, please check your internet connection and try again", Toast.LENGTH_LONG).show();//if there is a reponse error, notify the user
+                Log.d("bill error", "get votes");
             }
         });
         requestQueue.add(request2);
@@ -257,6 +258,9 @@ public class BillActivity extends AppCompatActivity implements NavigationView.On
                         String VoteCont = Member.getString("type");
                         String VoteResult = VoteCont.substring(38);
                         vote.Name = MemberName;
+                        if(VoteParty.equals("Labour (Co-op)")){
+                            VoteParty = "Labour";
+                        }
                         vote.Party = VoteParty;
                         vote.VoteType = VoteResult;
                         if (VoteResult.equals("AyeVote")){

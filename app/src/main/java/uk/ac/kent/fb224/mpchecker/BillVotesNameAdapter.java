@@ -71,9 +71,6 @@ public class BillVotesNameAdapter extends RecyclerView.Adapter<BillVotesNameAdap
         else if (Party.equals("Labour")){
             holder.PartyColour.setBackgroundColor(Color.rgb(146,0,13));
         }
-        else if (Party.equals("Labour (Co-op)")){
-            holder.PartyColour.setBackgroundColor(Color.rgb(146,0,14));
-        }
         else if (Party.equals("Liberal Democrat")){
             holder.PartyColour.setBackgroundColor(Color.rgb(253,187,48));
         }
@@ -101,6 +98,4 @@ public class BillVotesNameAdapter extends RecyclerView.Adapter<BillVotesNameAdap
     public int getItemCount() {
         return MPList.size();
     }
-
-
 }

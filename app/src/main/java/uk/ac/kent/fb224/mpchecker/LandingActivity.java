@@ -95,6 +95,10 @@ public class LandingActivity extends AppCompatActivity implements NavigationView
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         final Constituency NewCon = dataSnapshot.getValue(Constituency.class);
+
+                        if(NewCon != null && NewCon.Party.equals("Labour/Co-operative")){
+                            NewCon.Party = "Labour";
+                        }
                         NetManager.getInstance(LandingActivity.this).conList.add(NewCon);
                         if (NetManager.getInstance(LandingActivity.this).conList.size()==649){//this serves as a listener, to remove the loading page once the MP List has been loaded
                             NetManager.getInstance(LandingActivity.this).isLoaded = true;
