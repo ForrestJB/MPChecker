@@ -191,6 +191,15 @@ public class MPDetails extends AppCompatActivity {
                 startActivity(Browser);
             }
         });
+        Log.d("email", MP.email);
+        Contact.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", MP.email, null));
+//                emailIntent.setType("text/plain");
+                startActivity(Intent.createChooser(emailIntent, "Send Mail...."));
+            }
+        });
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, WikiURL, null,
                 new Response.Listener<JSONObject>() {
                     @Override

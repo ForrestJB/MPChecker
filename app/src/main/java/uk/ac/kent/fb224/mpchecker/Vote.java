@@ -8,4 +8,5 @@ public class Vote{
     String Name;
     String Party;
     String VoteType;
+    String Con;
 }

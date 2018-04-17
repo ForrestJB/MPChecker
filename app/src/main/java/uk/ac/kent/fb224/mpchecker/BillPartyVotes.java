@@ -79,6 +79,7 @@ public class BillPartyVotes extends AppCompatActivity{
             String compare = bill.VoteAyeList.get(i).Party;
             if(compare.equals(Party)){
                 AyeVotes.add(bill.VoteAyeList.get(i));
+                Log.d("iterations", Integer.toString(i));
             }
         }
         for(int i=0; i<bill.VoteNoeList.size();i++){//get all of the no votes from MPs of this party
@@ -101,7 +102,7 @@ public class BillPartyVotes extends AppCompatActivity{
                 if(j==121){
                 }else{
                 Constituency tempCon = NetMgr.conList.get(j);
-                if(tempVote.Name.equals(tempCon.MPName)){
+                if(tempVote.Con.equals(tempCon.ConName)){
                     AyeCons.add(tempCon);
                     break;
                 }
@@ -114,7 +115,7 @@ public class BillPartyVotes extends AppCompatActivity{
 
                 }else{
                 Constituency tempCon = NetMgr.conList.get(j);
-                if(tempVote.Name.equals(tempCon.MPName)){
+                if(tempVote.Con.equals(tempCon.ConName)){
                     NoeCons.add(tempCon);
                     break;
                 }

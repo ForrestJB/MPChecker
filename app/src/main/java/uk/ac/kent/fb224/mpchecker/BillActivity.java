@@ -116,7 +116,7 @@ public class BillActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(getApplicationContext(), "Network error, please check your internet connection and try again", Toast.LENGTH_LONG).show();//if there is a reponse error, notify the user
-                Log.d("bill Error", "get vote");
+                Log.e("bill Error", "get vote");
             }
         });
         requestQueue.add(request);
@@ -179,7 +179,7 @@ public class BillActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(getApplicationContext(), "Network error, please check your internet connection and try again", Toast.LENGTH_LONG).show();//if there is a reponse error, notify the user
-                Log.d("bill error", "get votes");
+                Log.e("bill error", "get votes");
             }
         });
         requestQueue.add(request2);
@@ -263,12 +263,10 @@ public class BillActivity extends AppCompatActivity implements NavigationView.On
                         }
                         vote.Party = VoteParty;
                         vote.VoteType = VoteResult;
-                        if (VoteResult.equals("AyeVote")){
-                            bill.VoteAyeList.add(vote);
-                        } else if (VoteResult.equals("NoVote")){
-                            bill.VoteNoeList.add(vote);
-                        }
-
+                        JSONArray about = Member.getJSONArray("member");
+                        JSONObject obj = about.getJSONObject(0);
+                        String RawConURL = obj.getString("_about");
+                        GetVoteCon(RawConURL, vote, bill);
                 }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -278,13 +276,45 @@ public class BillActivity extends AppCompatActivity implements NavigationView.On
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d("error", "vote fetch net error");
+                Log.e("error", "vote fetch net error");
            //todo error response
             }
         });
         requestQueue.add(request3);
     }
+    public void GetVoteCon(String URL, final Vote vote, final Bill bill){
+        NetManager NetMgr = NetManager.getInstance(getApplicationContext());
+        RequestQueue requestQueue = NetMgr.requestQueue;//fetch the request queue
+        String id = URL.substring(34);
+        String OutURL = "http://lda.data.parliament.uk/members/"+id+".json";
+        JsonObjectRequest request4 = new JsonObjectRequest(Request.Method.GET, OutURL, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    JSONObject result = response.getJSONObject("result");
+                    JSONObject primTopic = result.getJSONObject("primaryTopic");
+                    JSONObject Consti = primTopic.getJSONObject("constituency");
+                    JSONObject label = Consti.getJSONObject("label");
+                    String Con = label.getString("_value");
+                    vote.Con = Con;
+                    if (vote.VoteType.equals("AyeVote")){
+                        bill.VoteAyeList.add(vote);
+                    } else if (vote.VoteType.equals("NoVote")){
+                        bill.VoteNoeList.add(vote);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //todo error response
+            }
+        }); requestQueue.add(request4);
 
+
+    }
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
