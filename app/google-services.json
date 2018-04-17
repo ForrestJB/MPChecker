@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "536508487624",
+    "firebase_url": "https://mp-checker.firebaseio.com",
+    "project_id": "mp-checker",
+    "storage_bucket": "mp-checker.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:536508487624:android:9d017f5d211df22c",
+        "android_client_info": {
+          "package_name": "uk.ac.kent.FJB.mpchecker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "536508487624-ate4fhuookqu4v78c9gau650r9cmgcsv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "uk.ac.kent.FJB.mpchecker",
+            "certificate_hash": "5f9e2f777a0a0992e4d61cac972ad40b19380645"
+          }
+        },
+        {
+          "client_id": "536508487624-0taibnf7bonn4vuacp71sjrj02f7amkk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC5U3NoNvunTuT8mEY-QCzx7D6Dt_QuJ-g"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "536508487624-0taibnf7bonn4vuacp71sjrj02f7amkk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

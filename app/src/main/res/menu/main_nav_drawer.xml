@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group
+        android:id="@+id/one"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:title="Home" />
+    </group>
+
+    <group
+        android:id="@+id/two"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_MPs"
+            android:title="Browse Mps" />
+    </group>
+    <group
+        android:id="@+id/three"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_Bills"
+            android:title="Browse Bills" />
+    </group>
+    <group
+        android:id="@+id/four"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_reset"
+            android:title="Reset Your MP" />
+    </group>
+
+
+</menu>
