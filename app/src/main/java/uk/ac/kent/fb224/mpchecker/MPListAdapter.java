@@ -123,7 +123,10 @@ public class MPListAdapter extends RecyclerView.Adapter<MPListAdapter.ViewHolder
             MPPartyColour.setBackgroundColor(Color.rgb(0,0,0));
         }
         holder.MPRole.setText(con.MPRole);
-        holder.MPThumb.setImageUrl(con.MPImageUrl, NetManager.getInstance(context).imageLoader);
+        if(con.MPImageUrl == "placeholder"){
+            holder.MPThumb.setImageUrl("https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png", NetManager.getInstance(context).imageLoader);
+        } else{holder.MPThumb.setImageUrl(con.MPImageUrl, NetManager.getInstance(context).imageLoader);}
+
         if (con.isFav == true){
             holder.FavButton.setColorFilter(Color.rgb(218, 165, 32));
         }

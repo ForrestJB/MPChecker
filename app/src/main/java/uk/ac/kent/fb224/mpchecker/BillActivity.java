@@ -94,7 +94,6 @@ public class BillActivity extends AppCompatActivity implements NavigationView.On
         NetManager NetMgr = NetManager.getInstance(getApplicationContext());
         RequestQueue requestQueue = NetMgr.requestQueue;
         BillURL = "http://lda.data.parliament.uk/commonsdivisions.json?_view=Commons+Divisions&_pageSize=30&_page=0";
-
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, BillURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {

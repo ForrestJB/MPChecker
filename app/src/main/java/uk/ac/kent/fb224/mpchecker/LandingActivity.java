@@ -18,6 +18,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -49,6 +50,7 @@ import java.util.ArrayList;
  */
 
 public class LandingActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+    private ViewGroup YourMp;
     private TextView MPName;
     private TextView MPRole;
     private TextView MPCon;
@@ -76,6 +78,7 @@ public class LandingActivity extends AppCompatActivity implements NavigationView
         MPCon = findViewById(R.id.LandMPCon);
         MPImage = findViewById(R.id.LandMPImage);
         toolbar = findViewById(R.id.toolbar);
+        YourMp = findViewById(R.id.YourMPLayout);
 
         setSupportActionBar(toolbar);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -98,6 +101,9 @@ public class LandingActivity extends AppCompatActivity implements NavigationView
 
                         if(NewCon != null && NewCon.Party.equals("Labour/Co-operative")){
                             NewCon.Party = "Labour";
+                        }
+                        if(NewCon != null && NewCon.MPImageUrl == null){
+                            NewCon.MPImageUrl = "placeholder";
                         }
                         NetManager.getInstance(LandingActivity.this).conList.add(NewCon);
                         if (NetManager.getInstance(LandingActivity.this).conList.size()==649){//this serves as a listener, to remove the loading page once the MP List has been loaded
@@ -142,6 +148,14 @@ public class LandingActivity extends AppCompatActivity implements NavigationView
                 MPName.setText(UserMP.MPName);
                 MPRole.setText(UserMP.MPRole);
                 MPCon.setText(UserMP.ConName);
+                YourMp.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getApplicationContext(), MPDetails.class);
+                        intent.putExtra("MP Name", UserMP.MPName);
+                        startActivity(intent);
+                    }
+                });
                 if (UserMP.MPImageUrl != null) {//check to ensure there is an image to prevent crashes if the URL is null
                     NetManager.getInstance(getApplicationContext()).imageLoader.get(UserMP.MPImageUrl, imageListener1);//setup NetManager object, fetch MP image
                 }

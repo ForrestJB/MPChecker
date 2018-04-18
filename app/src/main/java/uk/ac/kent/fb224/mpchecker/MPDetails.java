@@ -123,8 +123,20 @@ public class MPDetails extends AppCompatActivity {
         setContentView(R.layout.mp_details_page);
 
         Intent intent = getIntent();
-        MPPosition = intent.getIntExtra("MP_POSITION", 0);
-        MP = NetManager.getInstance(this).DetailsConList.get(MPPosition);
+        String MPName = intent.getStringExtra("MP Name");
+        if(MPName == null){
+            MPPosition = intent.getIntExtra("MP_POSITION", 0);
+            MP = NetManager.getInstance(this).DetailsConList.get(MPPosition);
+        }else{
+            for(int i=0;i<NetManager.getInstance(this).conList.size();i++){
+                Constituency tempmp = NetManager.getInstance(this).conList.get(i);
+                if(MPName.equals(tempmp.MPName)){
+                    MP = tempmp;
+                    break;
+                }
+            }
+        }
+
 
         Image = findViewById(R.id.MPDetailsImage);
         Name = findViewById(R.id.MPDetailsName);
@@ -179,7 +191,7 @@ public class MPDetails extends AppCompatActivity {
         final NetManager NetMgr = NetManager.getInstance(getApplicationContext());
         if (MP.MPImageUrl != null) {//check to ensure there is an image to prevent crashes if the URL is null
             NetMgr.imageLoader.get(MP.MPImageUrl, imageListener1);//setup NetManager object, fetch MP image
-        }
+        }else{NetMgr.imageLoader.get("https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png", imageListener1);}
         RequestQueue requestQueue = NetMgr.requestQueue;//fetch the request queue
         String WikiURL = "https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exintro&titles=" + MP.MPName + "&format=json";
         WikiURL = WikiURL.replaceAll(" ", "%20");
