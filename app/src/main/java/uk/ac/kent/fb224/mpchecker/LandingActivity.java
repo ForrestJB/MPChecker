@@ -15,6 +15,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.transition.Scene;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -65,12 +66,22 @@ public class LandingActivity extends AppCompatActivity implements NavigationView
     private ImageView MPImage;
     private ActionBarDrawerToggle toggle;
     private android.support.v7.widget.Toolbar toolbar;
+    private Boolean BillsLoaded = false;
+    private int BillCounter = 0;
+    private int errorCount = 0;
+    private boolean error1shown = false;
+    private boolean error2shown = false;
+    private boolean error3shown = false;
+    private Scene LandingScene;
+    private Scene MPScene;
+    private ViewGroup SceneRoot;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.landing_menu);
 
+        mMPReference = FirebaseDatabase.getInstance().getReference();
         mask = findViewById(R.id.LandingMaskContainer);
         content = findViewById(R.id.LandingContentCont);
         MPName = findViewById(R.id.LandMPName);
@@ -79,6 +90,10 @@ public class LandingActivity extends AppCompatActivity implements NavigationView
         MPImage = findViewById(R.id.LandMPImage);
         toolbar = findViewById(R.id.toolbar);
         YourMp = findViewById(R.id.YourMPLayout);
+
+        SceneRoot = (ViewGroup) findViewById(R.id.drawer_layout);
+        LandingScene = Scene.getSceneForLayout(SceneRoot, R.layout.landing_menu, this);
+        MPScene = Scene.getSceneForLayout(SceneRoot, R.layout.mp_layout, this);
 
         setSupportActionBar(toolbar);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -89,14 +104,28 @@ public class LandingActivity extends AppCompatActivity implements NavigationView
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
+        NewsRView = findViewById(R.id.NewsRView);
+        layoutManager = new LinearLayoutManager(this);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        NewsRView.setLayoutManager(layoutManager);
+        adapter = new NewsListAdapter();
+        NewsRView.setAdapter(adapter);
+        adapter.NewsList = NetManager.getInstance(LandingActivity.this).NewsList;
+
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        for(int i=0;i<50;i++){//initialise the bill lists with null objects, these will be overwritten during loading
+            Bill tempbill = null;
+            NetManager.getInstance(this).BillList.add(tempbill);
+            NetManager.getInstance(this).StaticBillList.add(tempbill);
+        }
         if(NetManager.getInstance(LandingActivity.this).isLoaded==false){//if the list of MP's has not been loaded yet
             for(int k=0;k<=649;k++) {
                 mMPReference = FirebaseDatabase.getInstance().getReference().child("Raw Data").child("MP").child(Integer.toString(k));
                 ValueEventListener MPListener = new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
+
                         final Constituency NewCon = dataSnapshot.getValue(Constituency.class);
 
                         if(NewCon != null && NewCon.Party.equals("Labour/Co-operative")){
@@ -122,12 +151,188 @@ public class LandingActivity extends AppCompatActivity implements NavigationView
 
 
     }
+
+
+    private void GetBills(){
+        NetManager NetMgr = NetManager.getInstance(getApplicationContext());
+        RequestQueue requestQueue = NetMgr.requestQueue;
+        String BillURL = "http://lda.data.parliament.uk/commonsdivisions.json?_view=Commons+Divisions&_pageSize=50&_page=0";
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, BillURL, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    JSONObject result = response.getJSONObject("result");
+                    JSONArray items = result.getJSONArray("items");
+                    for(int i=0; i < items.length(); i++){
+                        JSONObject vote = items.getJSONObject(i);
+
+                        String VoteURL = vote.getString("_about");
+                        String tempURL = VoteURL.substring(36);
+                        GetVoteResult(tempURL, i);//this takes the id number from the url provided, and passes it a method to fetch the appropriate information
+                    }                             //the iteration number is also passed as this is used to ensure the list is sorted correctly
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                errorCount++;
+                GetBills();
+                if(errorCount >= 3 && error1shown == false){
+                    Toast.makeText(getApplicationContext(),"Error retrieving data from Parliament API, please try again later.", Toast.LENGTH_LONG).show();
+                    error1shown = true;
+                }
+            }
+        });
+        requestQueue.add(request);
+    }
+    public void GetVoteResult (final String id, final int index){
+        NetManager NetMgr = NetManager.getInstance(getApplicationContext());
+        RequestQueue requestQueue = NetMgr.requestQueue;//fetch the request queue
+        final String URL = "http://lda.data.parliament.uk/commonsdivisions/id/"+id+".json";
+        JsonObjectRequest request2 = new JsonObjectRequest(Request.Method.GET, URL, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                final Bill NewBill = new Bill();
+                NewBill.ID = id;
+                try {
+                    JSONObject result = response.getJSONObject("result");
+                    JSONObject PrimTopic = result.getJSONObject("primaryTopic");
+                    JSONArray AbstainArray = PrimTopic.getJSONArray("AbstainCount");
+                    int AbstainCount = 0;
+                    for (int i = 0; i < AbstainArray.length(); i++) {
+                        JSONObject AbCont = AbstainArray.getJSONObject(i);
+                        AbstainCount = AbCont.getInt("_value");
+                    }
+                    JSONArray AyeArray = PrimTopic.getJSONArray("AyesCount");
+                    int AyeCount = 0;
+                    for (int i = 0; i < AyeArray.length(); i++) {
+                        JSONObject AyeCont = AyeArray.getJSONObject(i);
+                        AyeCount = AyeCont.getInt("_value");
+                    }
+                    JSONArray NoeArray = PrimTopic.getJSONArray("Noesvotecount");
+                    int NoeCount = 0;
+                    for (int i = 0; i < NoeArray.length(); i++) {
+                        JSONObject NoeCont = NoeArray.getJSONObject(i);
+                        NoeCount = NoeCont.getInt("_value");
+                    }
+                    NewBill.Abstains = AbstainCount;
+                    NewBill.Ayes = AyeCount;
+                    NewBill.Noes = NoeCount;
+                    NewBill.Name = PrimTopic.getString("title");
+                    NewBill.count = BillCounter;
+                    JSONObject Dateobj = PrimTopic.getJSONObject("date");
+                    NewBill.Date = Dateobj.getString("_value");
+                    GetVotes(URL, NewBill);
+                    BillCounter++;
+                    NetManager.getInstance(LandingActivity.this).BillList.set(index, NewBill);
+                    NetManager.getInstance(LandingActivity.this).StaticBillList.set(index, NewBill);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                adapter.notifyDataSetChanged();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                GetVoteResult(id, index);
+                Log.d("error", "get vote");
+            }
+        }); requestQueue.add(request2);
+    }
+    public void GetVotes(final String url, final Bill bill){
+        final ArrayList<Vote> VoteList = new ArrayList<Vote>();
+        NetManager NetMgr = NetManager.getInstance(getApplicationContext());
+        RequestQueue requestQueue = NetMgr.requestQueue;//fetch the request queue
+        JsonObjectRequest request3 = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                JSONObject result = null;
+                try {
+                    result = response.getJSONObject("result");
+                    JSONObject main = result.getJSONObject("primaryTopic");
+                    JSONArray Votes = main.getJSONArray("vote");
+                    for(int i=0; i < Votes.length(); i++){
+                        final Vote vote = new Vote();
+                        JSONObject Member = Votes.getJSONObject(i);
+                        String VoteParty = Member.getString("memberParty");
+                        JSONObject Memberobj = Member.getJSONObject("memberPrinted");
+                        String MemberName = Memberobj.getString("_value");
+                        String VoteCont = Member.getString("type");
+                        String VoteResult = VoteCont.substring(38);
+                        vote.Name = MemberName;
+                        if(VoteParty.equals("Labour (Co-op)")){
+                            VoteParty = "Labour";
+                        }
+                        vote.Party = VoteParty;
+                        vote.VoteType = VoteResult;
+                        JSONArray about = Member.getJSONArray("member");
+                        JSONObject obj = about.getJSONObject(0);
+                        String RawConURL = obj.getString("_about");
+                        GetVoteCon(RawConURL, vote, bill, i);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("error", "vote fetch net error");
+                if(error2shown==false){
+                    Toast.makeText(getApplicationContext(), "There has been an error retrieving vote data, some information might be incorrect", Toast.LENGTH_LONG).show();}
+                error2shown = true;
+            }
+        });
+        requestQueue.add(request3);
+    }
+    public void GetVoteCon(final String URL, final Vote vote, final Bill bill, final int count){
+        NetManager NetMgr = NetManager.getInstance(getApplicationContext());
+        RequestQueue requestQueue = NetMgr.requestQueue;//fetch the request queue
+        String id = URL.substring(34);
+        final String OutURL = "http://lda.data.parliament.uk/members/"+id+".json";
+        JsonObjectRequest request4 = new JsonObjectRequest(Request.Method.GET, OutURL, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    JSONObject result = response.getJSONObject("result");
+                    JSONObject primTopic = result.getJSONObject("primaryTopic");
+                    JSONObject Consti = primTopic.getJSONObject("constituency");
+                    JSONObject label = Consti.getJSONObject("label");
+                    String Con = label.getString("_value");
+                    vote.Con = Con;
+                    if (vote.VoteType.equals("AyeVote")){
+                        bill.VoteAyeList.add(vote);
+                    } else if (vote.VoteType.equals("NoVote")){
+                        bill.VoteNoeList.add(vote);
+                    }
+                    if(bill.count>=49&&(count == (bill.Ayes+bill.Noes)-1)){
+                        mask.setVisibility(View.GONE);
+                        content.setVisibility(View.VISIBLE);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                if(error3shown==false){
+                Toast.makeText(getApplicationContext(), "There has been an error retrieving vote data, MP votes might be incorrect", Toast.LENGTH_LONG).show();}
+                error3shown= true;
+            }
+        }); requestQueue.add(request4);
+
+
+    }
     private void startManager(){//this class checks to see if the user has already set their MP
         SharedPreferences sharedPreferences = getSharedPreferences("Main_Pref", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Boolean isFirst = sharedPreferences.getBoolean("First_Open", true);
         String FoundMP = sharedPreferences.getString("User_MP", "error");
-        Log.d("found mp", FoundMP);
         if(isFirst==true){//if the app has not been opened on this device before
             Intent intent = new Intent(getApplicationContext(), FindActivityPostcode.class);
             startActivity(intent);
@@ -135,7 +340,6 @@ public class LandingActivity extends AppCompatActivity implements NavigationView
         }else{//else retrieve the MP the user set
 //            String FoundMP = sharedPreferences.getString("User_MP", "error");
             if(FoundMP.equals("error")){
-                Toast.makeText(getApplicationContext(), "Something hs gone very, very wrong here....", Toast.LENGTH_LONG).show();
             }else {
                 for(int i=0;i<NetManager.getInstance(getApplicationContext()).conList.size();i++){
                     if(i==121){}else {
@@ -159,13 +363,9 @@ public class LandingActivity extends AppCompatActivity implements NavigationView
                 if (UserMP.MPImageUrl != null) {//check to ensure there is an image to prevent crashes if the URL is null
                     NetManager.getInstance(getApplicationContext()).imageLoader.get(UserMP.MPImageUrl, imageListener1);//setup NetManager object, fetch MP image
                 }
-                NewsRView = findViewById(R.id.NewsRView);
-                layoutManager = new LinearLayoutManager(this);
-                layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-                NewsRView.setLayoutManager(layoutManager);
-                adapter = new NewsListAdapter();
-                NewsRView.setAdapter(adapter);
+
                 GetNews();
+                GetBills();
             }
         }
     }
@@ -202,13 +402,23 @@ public class LandingActivity extends AppCompatActivity implements NavigationView
                     for(int i=0;i<results.length();i++){
                         final News NewNews = new News();
                         JSONObject result = results.getJSONObject(i);
-                        NewNews.Date = result.getString("webPublicationDate");
+                        String tempDate = result.getString("webPublicationDate");
+
+                        //these lines manipulate the date/time taken from the api to produce a more easily readable timestamp
+                        tempDate = tempDate.replace("T", " ");
+                        tempDate = tempDate.replace("Z", " ");
+                        String year = tempDate.substring(0,4);
+                        String month = tempDate.substring(5,7);
+                        String day = tempDate.substring(8,10);
+                        String time = tempDate.substring(11);
+                        NewNews.Date = time+" -  "+day+"/"+month+"/"+year;
+
                         NewNews.Name = result.getString("webTitle");
                         NewNews.Category = result.getString("pillarName");
                         NewNews.URL = result.getString("webUrl");
-                        NewsList.add(NewNews);
+                        NetManager.getInstance(LandingActivity.this).NewsList.add(NewNews);
                     }
-                    adapter.NewsList = NewsList;
+                    adapter.NewsList = NetManager.getInstance(LandingActivity.this).NewsList;
                     adapter.notifyDataSetChanged();
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -220,8 +430,6 @@ public class LandingActivity extends AppCompatActivity implements NavigationView
                 Log.d("error", "news json error");
             }
         }); requestQueue.add(request);
-        mask.setVisibility(View.GONE);
-        content.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -233,16 +441,19 @@ public class LandingActivity extends AppCompatActivity implements NavigationView
         } else if(id == R.id.nav_MPs){
             Intent intent = new Intent(this, MPActivity.class);
             startActivity(intent);
-        } if(id == R.id.nav_Bills){
+        } else if(id == R.id.nav_Bills){
             Intent intent = new Intent(this, BillActivity.class);
             startActivity(intent);
-        } if(id == R.id.nav_reset){
+        } else if(id == R.id.nav_reset){
             SharedPreferences sharedPreferences = getSharedPreferences("Main_Pref", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.remove("First_Open");
             editor.remove("User_MP");
             editor.apply();
             Intent intent = new Intent(this, LandingActivity.class);
+            startActivity(intent);
+        }else if(id == R.id.nav_about){
+            Intent intent = new Intent(this, About.class);
             startActivity(intent);
         }
 

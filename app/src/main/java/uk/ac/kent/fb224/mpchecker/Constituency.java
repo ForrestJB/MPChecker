@@ -14,5 +14,6 @@ public class Constituency {
     public String MPRole;
     public int pos;
     public String email;
+    public String id;
     public boolean isFav = false;
 }

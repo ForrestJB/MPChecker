@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -59,9 +60,11 @@ public class BillListAdapter extends RecyclerView.Adapter<BillListAdapter.ViewHo
         holder.Ayes.setText("Ayes: "+bill.Ayes);
         holder.Noes.setText("Noes: "+bill.Noes);
         try {
-            Date df = new SimpleDateFormat("yyyy-mm-dd").parse(bill.Date);
-            SimpleDateFormat formatter = new SimpleDateFormat("E, MMM dd yyyy");
-            String ParsedDate = formatter.format(df);
+            DateFormat raw = new SimpleDateFormat("yyyy-MM-dd");
+            DateFormat output = new SimpleDateFormat("E, MMM dd yyyy");
+            Date newDate = null;
+            newDate = raw.parse(bill.Date);
+            String ParsedDate = output.format(newDate);
             holder.Date.setText(ParsedDate);
         } catch (ParseException e) {
             e.printStackTrace();

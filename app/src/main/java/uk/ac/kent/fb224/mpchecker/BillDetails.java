@@ -59,14 +59,6 @@ public class BillDetails extends AppCompatActivity {
         Ayes.setText(Integer.toString(bill.Ayes));
         Noes.setText(Integer.toString(bill.Noes));
 
-        NoeOC.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), BillVotes.class);
-                intent.putExtra("Bill_Position", BillPosition);
-                startActivity(intent);
-            }
-        });
         AyeOC.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

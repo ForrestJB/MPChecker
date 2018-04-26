@@ -98,12 +98,15 @@ public class MPActivity extends AppCompatActivity implements NavigationView.OnNa
         MPRecyclerView.setLayoutManager(layoutManager);
         adapter = new MPListAdapter();
         MPRecyclerView.setAdapter(adapter);//set the adapter and layout manager for the recyclerview
+        getFavs();
+
 
         adapter.ConList = NetManager.getInstance(this).conList;
         NetManager.getInstance(this).DetailsConList = NetManager.getInstance(this).conList; // this defaults the list of MPs to be used by the details activity to be the full list of MPs
         NetManager NetMgr = NetManager.getInstance(getApplicationContext());
         RequestQueue requestQueue = NetMgr.requestQueue;//fetch the request queue
         Conurl = "https://www.theyworkforyou.com/api/getConstituencies?key=DvbcgvFHgew2FECNnUCJ7frD&output=js";
+
 //        StringRequest request = new StringRequest(Request.Method.GET, Conurl, // this volley request fetches the name of all current UK Constituencies todo remove this or keep?
 //            new Response.Listener<String>() {
 //            @Override
@@ -187,6 +190,31 @@ public class MPActivity extends AppCompatActivity implements NavigationView.OnNa
 //    }
         adapter.notifyDataSetChanged();
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getFavs();
+        adapter.notifyDataSetChanged();
+    }
+    public void getFavs(){
+        SharedPreferences sharedPref = getSharedPreferences("Main_Pref", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        int key = sharedPref.getInt("MPNumber", 0);
+        NetManager.getInstance(this).conFavList.clear();//clear the list of favourites before repopulating in order to prevent duplicates
+            for (int i = 0; i < NetManager.getInstance(this).conList.size(); i++) {
+                if(i==121){}
+                else{
+                    Constituency tempCon = NetManager.getInstance(this).conList.get(i);
+                    String test = sharedPref.getString("MP"+tempCon.id, "error");
+                    if(!test.equals("error")){
+                        NetManager.getInstance(this).conList.get(i).isFav = true;
+                        NetManager.getInstance(this).conFavList.add(tempCon);
+                    }
+                }
+            }
+        }
+
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
@@ -196,16 +224,19 @@ public class MPActivity extends AppCompatActivity implements NavigationView.OnNa
         } else if(id == R.id.nav_MPs){
             Intent intent = new Intent(this, MPActivity.class);
             startActivity(intent);
-        } if(id == R.id.nav_Bills){
+        } else if(id == R.id.nav_Bills){
             Intent intent = new Intent(this, BillActivity.class);
             startActivity(intent);
-        } if(id == R.id.nav_reset){
+        } else if(id == R.id.nav_reset){
             SharedPreferences sharedPreferences = getSharedPreferences("Main_Pref", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.remove("First_Open");
             editor.remove("User_MP");
             editor.apply();
             Intent intent = new Intent(this, LandingActivity.class);
+            startActivity(intent);
+        }else if(id == R.id.nav_about){
+            Intent intent = new Intent(this, About.class);
             startActivity(intent);
         }
 

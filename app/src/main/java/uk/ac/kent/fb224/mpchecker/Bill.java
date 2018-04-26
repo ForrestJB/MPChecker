@@ -13,6 +13,7 @@ public class Bill {
     String Name;
     String Result;
     String MPVote;
+    int count;
     int Ayes;
     int Noes;
     int Abstains;

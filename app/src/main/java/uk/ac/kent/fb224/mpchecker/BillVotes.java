@@ -70,8 +70,18 @@ public class BillVotes extends AppCompatActivity {
         NAadapter = new BillVotesNameAdapter();
         NNadapter = new BillVotesNameAdapter();
 
-        layoutManager1 = new LinearLayoutManager(this);
-        layoutManager2 = new LinearLayoutManager(this);
+        layoutManager1 = new LinearLayoutManager(this){//these are here as we want to use the smooth scrolling provided by the NestedScrollView instead of the RecyclerView
+          @Override
+            public boolean canScrollVertically(){
+              return false;
+          }
+        };
+        layoutManager2 = new LinearLayoutManager(this){
+            @Override
+            public boolean canScrollVertically(){
+                return false;
+            }
+        };
         layoutManager1.setOrientation(LinearLayoutManager.VERTICAL);
         layoutManager2.setOrientation(LinearLayoutManager.VERTICAL);
         PartyAyeRView.setLayoutManager(layoutManager1);
@@ -137,7 +147,7 @@ public class BillVotes extends AppCompatActivity {
                     }
                 }}
         }
-        for(int i=0;i<bill.VoteNoeList.size();i++){//get the full details for all of the yes voting MP's found earlier
+        for(int i=0;i<bill.VoteNoeList.size();i++){//get the full details for all of the no voting MP's found earlier
             Vote tempVote = bill.VoteNoeList.get(i);
             for(int j=0;j<NetMgr.conList.size();j++){
                 if(j==121){

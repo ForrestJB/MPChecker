@@ -57,7 +57,6 @@ public class FindActivityPostcode extends AppCompatActivity{
         final Constituency YourCon = new Constituency();
         String MPName="";
         String URL = "https://www.theyworkforyou.com/api/getMP?key=DvbcgvFHgew2FECNnUCJ7frD&postcode="+Input+"&output=js";
-        Log.d("url", URL);
         NetManager NetMgr = NetManager.getInstance(getApplicationContext());
         RequestQueue requestQueue = NetMgr.requestQueue;
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, URL, null, new Response.Listener<JSONObject>() {
@@ -76,9 +75,12 @@ public class FindActivityPostcode extends AppCompatActivity{
                             }
                         }
                     }
+                    if(YourCon == null){
+                        Toast.makeText(getApplicationContext(), "Postcode not found, please try again", Toast.LENGTH_LONG).show();
+                    }
                     SharedPreferences sharedPref = getSharedPreferences("Main_Pref", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPref.edit();
-                    //todo error catch if mp is not found
+
                     editor.putString("User_MP", YourCon.MPName);
                     editor.putBoolean("First_Open", false);
                     editor.apply();
@@ -86,7 +88,7 @@ public class FindActivityPostcode extends AppCompatActivity{
                     Intent intent = new Intent(getApplicationContext(), LandingActivity.class);
                     startActivity(intent);
                 } catch (JSONException e) {
-                    e.printStackTrace();
+                    Toast.makeText(getApplicationContext(), "Postcode not found, please try again", Toast.LENGTH_LONG).show();
                 }
             }
         }, new Response.ErrorListener() {

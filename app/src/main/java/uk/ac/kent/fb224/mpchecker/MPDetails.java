@@ -3,12 +3,15 @@
 // http://lda.data.parliament.uk/electionresults.json?_view=Elections&_pageSize=500&_sort=-election.label&_page=0
 package uk.ac.kent.fb224.mpchecker;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -97,6 +100,7 @@ public class MPDetails extends AppCompatActivity {
     public ImageView Emask;
     public ProgressBar ESpinner;
     public Button Contact;
+    private FloatingActionButton FavButton;
     private boolean pagetwo = true;
     private ProgressBar WikiSpinner;
     private int MPPosition;
@@ -121,7 +125,6 @@ public class MPDetails extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.mp_details_page);
-
         Intent intent = getIntent();
         String MPName = intent.getStringExtra("MP Name");
         if(MPName == null){
@@ -130,7 +133,8 @@ public class MPDetails extends AppCompatActivity {
         }else{
             for(int i=0;i<NetManager.getInstance(this).conList.size();i++){
                 Constituency tempmp = NetManager.getInstance(this).conList.get(i);
-                if(MPName.equals(tempmp.MPName)){
+                if(i==121){}
+                else if(MPName.equals(tempmp.MPName)){
                     MP = tempmp;
                     break;
                 }
@@ -170,6 +174,7 @@ public class MPDetails extends AppCompatActivity {
         EResult = findViewById(R.id.MPDEResult);
         Emask = findViewById(R.id.MPDEMask);
         ESpinner = findViewById(R.id.MPDESpinner);
+        FavButton = findViewById(R.id.MPDetailsFav);
         Name.setText(MP.MPName);
         Con.setText(MP.ConName);
         Role.setText(MP.MPRole);
@@ -185,7 +190,24 @@ public class MPDetails extends AppCompatActivity {
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         BillRecyclerView.setLayoutManager(layoutManager);
         adapter = new MPDetailsBillAdapter();
-        NetManager.getInstance(this).BillList.clear();
+        NetManager.getInstance(this).BillList = NetManager.getInstance(this).StaticBillList; // reset the billist so we can set new values for MPVote, which keeps track of how this mp voted for each bill
+        for(int i=0;i<NetManager.getInstance(this).BillList.size();i++){
+            Bill tempBill = NetManager.getInstance(this).BillList.get(i);
+            for(int j=0;j<tempBill.VoteAyeList.size();j++){
+                Vote tempVote = tempBill.VoteAyeList.get(j);
+                if(MP.ConName.equals(tempVote.Con)){
+                    NetManager.getInstance(this).BillList.get(i).MPVote = "AyeVote";
+                    break;
+                }
+            }
+            for(int x=0;x<tempBill.VoteNoeList.size();x++){
+                Vote tempVote = tempBill.VoteNoeList.get(x);
+                if(MP.ConName.equals(tempVote.Con)){
+                    NetManager.getInstance(this).BillList.get(i).MPVote = "NoVote";
+                    break;
+                }
+            }
+        }
         adapter.BillList = NetManager.getInstance(this).BillList;
         BillRecyclerView.setAdapter(adapter);
         final NetManager NetMgr = NetManager.getInstance(getApplicationContext());
@@ -208,8 +230,38 @@ public class MPDetails extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", MP.email, null));
-//                emailIntent.setType("text/plain");
                 startActivity(Intent.createChooser(emailIntent, "Send Mail...."));
+            }
+        });
+        if(MP.isFav==true){
+            FavButton.setColorFilter(Color.rgb(218, 165, 32));
+        }
+        FavButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (MP.isFav == false) {
+                    FavButton.setColorFilter(Color.rgb(218, 165, 32));
+                    MP.isFav = true;
+                    SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("Main_Pref", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPref.edit();
+                    int key = sharedPref.getInt("MPNumber", 0);
+                    editor.putString("MP"+MP.id, MP.ConName);
+                    editor.putInt("MPNumber", key+1);
+                    editor.apply();
+                    NetManager.conFavList.add(MP);
+
+                }
+                else{
+                    FavButton.setColorFilter(null);
+                    SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("Main_Pref", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPref.edit();
+                    int key = sharedPref.getInt("MPNumber", 0);
+                    editor.remove("MP"+MP.id);
+                    editor.putInt("MPNumber", key-1);
+                    editor.apply();
+                    MP.isFav = false;
+                    NetManager.conFavList.remove(MP);
+                }
             }
         });
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, WikiURL, null,
@@ -269,7 +321,6 @@ public class MPDetails extends AppCompatActivity {
 
                 ;mElectionDatabase.addValueEventListener(ElectionListener);
             };
-        getBills();
 //        String ElectionURL = "http://lda.data.parliament.uk/electionresults.json?_view=Elections&_pageSize=500&_sort=-election.label&_page=0";
 //        String ElectionURL2 = "http://lda.data.parliament.uk/electionresults.json?_view=Elections&_pageSize=500&_sort=-election.label&_page=1";
 //        JsonObjectRequest ERequest = new JsonObjectRequest(Request.Method.GET, ElectionURL2, null, new Response.Listener<JSONObject>() {
@@ -542,114 +593,5 @@ public class MPDetails extends AppCompatActivity {
             return Html.fromHtml(html).toString();
         }
     }
-
-    public void getBills() {
-        String BillID = null;
-        NetManager NetMgr = NetManager.getInstance(getApplicationContext());
-        RequestQueue requestQueue = NetMgr.requestQueue;
-        String BillURL = "http://lda.data.parliament.uk/commonsdivisions.json?_view=Commons+Divisions&_pageSize=30&_page=0";
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, BillURL, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    JSONObject result = response.getJSONObject("result");
-                    JSONArray items = result.getJSONArray("items");
-                    for (int i = 0; i < items.length(); i++) {
-                        JSONObject vote = items.getJSONObject(i);
-
-                        String VoteURL = vote.getString("_about");
-                        String BillID = VoteURL.substring(36);
-                        getVotes(BillID);
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(), "Network error, please check your internet connection", Toast.LENGTH_LONG).show();//if there is a reponse error, notify the user
-            }
-        });
-        requestQueue.add(request);
-    }
-        public void getVotes(String BillID){
-            NetManager NetMgr = NetManager.getInstance(getApplicationContext());
-            RequestQueue requestQueue = NetMgr.requestQueue;
-            String BillURL = "http://lda.data.parliament.uk/commonsdivisions/id/"+BillID+".json";
-            final String finalBillID = BillID;
-            JsonObjectRequest request2 = new JsonObjectRequest(Request.Method.GET, BillURL, null, new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    final Bill NewBill = new Bill();
-                    NewBill.ID = finalBillID;
-                    try {
-                        JSONObject result = response.getJSONObject("result");
-                        JSONObject PrimTopic = result.getJSONObject("primaryTopic");
-                        JSONArray AbstainArray = PrimTopic.getJSONArray("AbstainCount");
-                        int AbstainCount = 0;
-                        for (int i = 0; i < AbstainArray.length(); i++) {
-                            JSONObject AbCont = AbstainArray.getJSONObject(i);
-                            AbstainCount = AbCont.getInt("_value");
-                        }
-                        JSONArray AyeArray = PrimTopic.getJSONArray("AyesCount");
-                        int AyeCount = 0;
-                        for (int i = 0; i < AyeArray.length(); i++) {
-                            JSONObject AyeCont = AyeArray.getJSONObject(i);
-                            AyeCount = AyeCont.getInt("_value");
-                        }
-                        JSONArray NoeArray = PrimTopic.getJSONArray("Noesvotecount");
-                        int NoeCount = 0;
-                        for (int i = 0; i < NoeArray.length(); i++) {
-                            JSONObject NoeCont = NoeArray.getJSONObject(i);
-                            NoeCount = NoeCont.getInt("_value");
-                        }
-                        NewBill.Abstains = AbstainCount;
-                        NewBill.Ayes = AyeCount;
-                        NewBill.Noes = NoeCount;
-                        NewBill.Name = PrimTopic.getString("title");
-                        JSONObject Dateobj = PrimTopic.getJSONObject("date");
-                        NewBill.Date = Dateobj.getString("_value");
-                        JSONArray Votes = PrimTopic.getJSONArray("vote");
-                        String MPVote = null;
-                        for(int i=0; i < Votes.length(); i++){
-                            final Vote vote = new Vote();
-                            JSONObject Member = Votes.getJSONObject(i);
-                            String VoteParty = Member.getString("memberParty");
-                            JSONObject Memberobj = Member.getJSONObject("memberPrinted");
-                            String MemberName = Memberobj.getString("_value");
-                            String VoteCont = Member.getString("type");
-                            String VoteResult = VoteCont.substring(38);
-                            vote.Name = MemberName;
-                            vote.Party = VoteParty;
-                            vote.VoteType = VoteResult;
-                            if (VoteResult.equals("AyeVote")){
-                                NewBill.VoteAyeList.add(vote);
-                            } else if (VoteResult.equals("NoVote")){
-                                NewBill.VoteNoeList.add(vote);
-                            }
-                            if(vote.Name.equals(MP.MPName)){
-                                NewBill.MPVote = vote.VoteType;
-                                break;
-                            }
-                        }
-                        NetManager.getInstance(MPDetails.this).BillList.add(NewBill);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    adapter.notifyDataSetChanged();
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(getApplicationContext(), "Network error, please check your internet connection", Toast.LENGTH_LONG).show();//if there is a reponse error, notify the user
-
-                }
-            });
-            requestQueue.add(request2);
-        }
-
-
-
 }
 

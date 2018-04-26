@@ -34,6 +34,9 @@
         <activity android:name=".BillVotes"
             android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar"
             android:parentActivityName=".BillDetails"/>
+        <activity android:name=".About"
+            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar"
+            android:parentActivityName=".LandingActivity"/>
 
         <activity android:name=".BillPartyVotes"
             android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar"

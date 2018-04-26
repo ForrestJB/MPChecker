@@ -78,17 +78,22 @@
             android:id="@+id/PostSearchEditText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="12dp"
             android:backgroundTint="@color/cardview_light_background"
+            android:hint="SW1W 0DT"
+            android:textColorHint="#696969"
             android:imeActionLabel="@string/action_search"
             android:imeOptions="actionSearch"
             android:singleLine="true"
+            android:textAlignment="viewStart"
             android:textColor="@android:color/background_light"
             android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/imageView24"
             app:layout_constraintTop_toBottomOf="@+id/TitleAni3" />
 
         <TextView
@@ -133,6 +138,16 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@mipmap/logo_hdpi" />
+
+        <ImageView
+            android:id="@+id/imageView24"
+            android:layout_width="20dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/PostSearchEditText"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/PostSearchEditText"
+            app:srcCompat="@drawable/ic_search_white_48dp" />
     </android.support.constraint.ConstraintLayout>
 
 </android.support.constraint.ConstraintLayout>

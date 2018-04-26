@@ -30,6 +30,13 @@
             android:id="@+id/nav_reset"
             android:title="Reset Your MP" />
     </group>
+    <group
+        android:id="@+id/five"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_about"
+            android:title="About" />
+    </group>
 
 
 </menu>

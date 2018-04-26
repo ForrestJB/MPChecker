@@ -18,6 +18,9 @@ import java.util.ArrayList;
 public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHolder>{
     private Context context;
     public ArrayList<News> NewsList = new ArrayList<>();
+    public void setHasStableIds(boolean hasStableIds) {
+        super.setHasStableIds(hasStableIds);
+    }
     public class ViewHolder extends RecyclerView.ViewHolder{
         TextView Title;
         TextView Date;

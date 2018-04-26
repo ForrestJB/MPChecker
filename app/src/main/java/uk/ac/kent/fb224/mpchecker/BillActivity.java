@@ -89,100 +89,10 @@ public class BillActivity extends AppCompatActivity implements NavigationView.On
         adapter = new BillListAdapter();
         BillRecyclerView.setAdapter(adapter);
         adapter.BillList = NetManager.getInstance(this).BillList;
-        NetManager.getInstance(this).BillList.clear();       //these lines are in to prevent duplicates appearing
-        NetManager.getInstance(this).StaticBillList.clear(); //when closing and reopening the bills browse page
-        NetManager NetMgr = NetManager.getInstance(getApplicationContext());
-        RequestQueue requestQueue = NetMgr.requestQueue;
-        BillURL = "http://lda.data.parliament.uk/commonsdivisions.json?_view=Commons+Divisions&_pageSize=30&_page=0";
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, BillURL, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    JSONObject result = response.getJSONObject("result");
-                    JSONArray items = result.getJSONArray("items");
-                    for(int i=0; i < items.length(); i++){
-                        JSONObject vote = items.getJSONObject(i);
 
-                        String VoteURL = vote.getString("_about");
-                        String tempURL = VoteURL.substring(36);
-                        GetVoteResult(tempURL);//this takes the id number from the url provided, and passes it a method to fetch the appropriate information
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(), "Network error, please check your internet connection and try again", Toast.LENGTH_LONG).show();//if there is a reponse error, notify the user
-                Log.e("bill Error", "get vote");
-            }
-        });
-        requestQueue.add(request);
-    }
-    public void GetVoteResult (final String id){
-        NetManager NetMgr = NetManager.getInstance(getApplicationContext());
-        RequestQueue requestQueue = NetMgr.requestQueue;//fetch the request queue
-        final String URL = "http://lda.data.parliament.uk/commonsdivisions/id/"+id+".json";
-        JsonObjectRequest request2 = new JsonObjectRequest(Request.Method.GET, URL, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                final Bill NewBill = new Bill();
-                NewBill.ID = id;
-                try {
-                    JSONObject result = response.getJSONObject("result");
-                    JSONObject PrimTopic = result.getJSONObject("primaryTopic");
-                    JSONArray AbstainArray = PrimTopic.getJSONArray("AbstainCount");
-                    int AbstainCount = 0;
-                    for (int i = 0; i < AbstainArray.length(); i++) {
-                        JSONObject AbCont = AbstainArray.getJSONObject(i);
-                        AbstainCount = AbCont.getInt("_value");
-                    }
-                    JSONArray AyeArray = PrimTopic.getJSONArray("AyesCount");
-                    int AyeCount = 0;
-                    for (int i = 0; i < AyeArray.length(); i++) {
-                        JSONObject AyeCont = AyeArray.getJSONObject(i);
-                        AyeCount = AyeCont.getInt("_value");
-                    }
-                    JSONArray NoeArray = PrimTopic.getJSONArray("Noesvotecount");
-                    int NoeCount = 0;
-                    for (int i = 0; i < NoeArray.length(); i++) {
-                        JSONObject NoeCont = NoeArray.getJSONObject(i);
-                        NoeCount = NoeCont.getInt("_value");
-                    }
-                    NewBill.Abstains = AbstainCount;
-                    NewBill.Ayes = AyeCount;
-                    NewBill.Noes = NoeCount;
-                    NewBill.Name = PrimTopic.getString("title");
-                    JSONObject Dateobj = PrimTopic.getJSONObject("date");
-                    NewBill.Date = Dateobj.getString("_value");
-                    GetVotes(URL, NewBill);
-                    Counter++;
-                    if(Counter == 30){
-                        MaskText = findViewById(R.id.BillLoadText);
-                        MaskImage = findViewById(R.id.BillLoadMask);
-                        MaskSpinner = findViewById(R.id.BillLoadSpinner);
-                        MaskText.setVisibility(View.GONE);
-                        MaskImage.setVisibility(View.GONE);
-                        MaskSpinner.setVisibility(View.GONE);
-                    }
-                    NetManager.getInstance(BillActivity.this).BillList.add(NewBill);
-                    NetManager.getInstance(BillActivity.this).StaticBillList.add(NewBill);
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                adapter.notifyDataSetChanged();
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(), "Network error, please check your internet connection and try again", Toast.LENGTH_LONG).show();//if there is a reponse error, notify the user
-                Log.e("bill error", "get votes");
-            }
-        });
-        requestQueue.add(request2);
     }
+
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
 //        inflater.inflate(R.menu.main_nav_drawer, menu);
@@ -236,84 +146,8 @@ public class BillActivity extends AppCompatActivity implements NavigationView.On
         NetManager.getInstance(BillActivity.this).BillList = FilteredList;
         adapter.notifyDataSetChanged();
     }
-    public void GetVotes(String url, final Bill bill){
-        final ArrayList<Vote> VoteList = new ArrayList<Vote>();
-        NetManager NetMgr = NetManager.getInstance(getApplicationContext());
-        RequestQueue requestQueue = NetMgr.requestQueue;//fetch the request queue
-        JsonObjectRequest request3 = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                JSONObject result = null;
-                try {
-                    result = response.getJSONObject("result");
-                    JSONObject main = result.getJSONObject("primaryTopic");
-                    JSONArray Votes = main.getJSONArray("vote");
-                    for(int i=0; i < Votes.length(); i++){
-                        final Vote vote = new Vote();
-                        JSONObject Member = Votes.getJSONObject(i);
-                        String VoteParty = Member.getString("memberParty");
-                        JSONObject Memberobj = Member.getJSONObject("memberPrinted");
-                        String MemberName = Memberobj.getString("_value");
-                        String VoteCont = Member.getString("type");
-                        String VoteResult = VoteCont.substring(38);
-                        vote.Name = MemberName;
-                        if(VoteParty.equals("Labour (Co-op)")){
-                            VoteParty = "Labour";
-                        }
-                        vote.Party = VoteParty;
-                        vote.VoteType = VoteResult;
-                        JSONArray about = Member.getJSONArray("member");
-                        JSONObject obj = about.getJSONObject(0);
-                        String RawConURL = obj.getString("_about");
-                        GetVoteCon(RawConURL, vote, bill);
-                }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("error", "vote fetch net error");
-           //todo error response
-            }
-        });
-        requestQueue.add(request3);
-    }
-    public void GetVoteCon(String URL, final Vote vote, final Bill bill){
-        NetManager NetMgr = NetManager.getInstance(getApplicationContext());
-        RequestQueue requestQueue = NetMgr.requestQueue;//fetch the request queue
-        String id = URL.substring(34);
-        String OutURL = "http://lda.data.parliament.uk/members/"+id+".json";
-        JsonObjectRequest request4 = new JsonObjectRequest(Request.Method.GET, OutURL, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    JSONObject result = response.getJSONObject("result");
-                    JSONObject primTopic = result.getJSONObject("primaryTopic");
-                    JSONObject Consti = primTopic.getJSONObject("constituency");
-                    JSONObject label = Consti.getJSONObject("label");
-                    String Con = label.getString("_value");
-                    vote.Con = Con;
-                    if (vote.VoteType.equals("AyeVote")){
-                        bill.VoteAyeList.add(vote);
-                    } else if (vote.VoteType.equals("NoVote")){
-                        bill.VoteNoeList.add(vote);
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                //todo error response
-            }
-        }); requestQueue.add(request4);
 
 
-    }
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
@@ -323,16 +157,19 @@ public class BillActivity extends AppCompatActivity implements NavigationView.On
         } else if(id == R.id.nav_MPs){
             Intent intent = new Intent(this, MPActivity.class);
             startActivity(intent);
-        } if(id == R.id.nav_Bills){
+        } else if(id == R.id.nav_Bills){
             Intent intent = new Intent(this, BillActivity.class);
             startActivity(intent);
-        } if(id == R.id.nav_reset){
+        } else if(id == R.id.nav_reset){
             SharedPreferences sharedPreferences = getSharedPreferences("Main_Pref", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.remove("First_Open");
             editor.remove("User_MP");
             editor.apply();
             Intent intent = new Intent(this, LandingActivity.class);
+            startActivity(intent);
+        }else if(id == R.id.nav_about){
+            Intent intent = new Intent(this, About.class);
             startActivity(intent);
         }
 

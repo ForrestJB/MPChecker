@@ -24,6 +24,7 @@ public class NetManager {
     static ArrayList<Bill> BillList = new ArrayList<Bill>();
     static ArrayList<Bill> StaticBillList = new ArrayList<Bill>();
     static ArrayList<Bill> MPDetailsBillList = new ArrayList<Bill>();
+    static ArrayList<News> NewsList = new ArrayList<>();
     public Boolean isLoaded = false;
     public ImageLoader imageLoader;
 

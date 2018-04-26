@@ -2,6 +2,7 @@ package uk.ac.kent.fb224.mpchecker;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
@@ -38,6 +39,7 @@ public class MPListAdapter extends RecyclerView.Adapter<MPListAdapter.ViewHolder
         TextView MPRole;
         FloatingActionButton FavButton;
 
+
         private View.OnClickListener onClick = new View.OnClickListener() {
             @Override
             public void onClick(View view) {//onclick to open MP profile page when a card is clicked
@@ -57,20 +59,32 @@ public class MPListAdapter extends RecyclerView.Adapter<MPListAdapter.ViewHolder
             MPRole = itemView.findViewById(R.id.MPRole);
             FavButton = itemView.findViewById(R.id.MPFav);
             this.itemView.setOnClickListener(onClick);
+
             FavButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) { // handle what to do when the Favourite button is pressed
                     Constituency con = ConList.get(getAdapterPosition());
                     if (con.isFav == false) {
                         FavButton.setColorFilter(Color.rgb(218, 165, 32));
-                        Log.d("con pulled", con.MPName);//todo: remove debug
                         con.isFav = true;
+                        SharedPreferences sharedPref = context.getSharedPreferences("Main_Pref", Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        int key = sharedPref.getInt("MPNumber", 0);
+                        editor.putString("MP"+con.id, con.ConName);
+                        editor.putInt("MPNumber", key+1);
+                        editor.apply();
                         NetManager.conFavList.add(con);
                         notifyDataSetChanged();
 
                     }
                     else{
                         FavButton.setColorFilter(null);
+                        SharedPreferences sharedPref = context.getSharedPreferences("Main_Pref", Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        int key = sharedPref.getInt("MPNumber", 0);
+                        editor.remove("MP"+con.id);
+                        editor.putInt("MPNumber", key-1);
+                        editor.apply();
                         con.isFav = false;
                         NetManager.conFavList.remove(con);
                         notifyDataSetChanged();
@@ -79,6 +93,7 @@ public class MPListAdapter extends RecyclerView.Adapter<MPListAdapter.ViewHolder
             });
         }
     }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         context = parent.getContext();
