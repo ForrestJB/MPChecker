@@ -26,7 +26,7 @@ public class BillDetails extends AppCompatActivity {
     private TextView Ayes;
     private TextView Noes;
     private ImageView AyeOC;
-    private ImageView NoeOC;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,7 +42,7 @@ public class BillDetails extends AppCompatActivity {
         Ayes = findViewById(R.id.BDAyes);
         Noes = findViewById(R.id.BDNoes);
         AyeOC = findViewById(R.id.BDAyeOCL);
-        NoeOC = findViewById(R.id.BDNoeOCL);
+
 
         Title.setText(bill.Name);
         try {

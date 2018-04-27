@@ -24,7 +24,7 @@ import java.util.ArrayList;
  * Created by Tree1 on 24/03/2018.
  */
 
-public class BillPartyVotes extends AppCompatActivity{
+public class BillPartyVotes extends AppCompatActivity {
     private String Party;
     private Bill bill;
     private int BillPosition;
@@ -44,6 +44,7 @@ public class BillPartyVotes extends AppCompatActivity{
     private ArrayList<Constituency> AyeCons = new ArrayList<>();
     private ArrayList<Constituency> NoeCons = new ArrayList<>();
     private ViewGroup Mask;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,15 +68,15 @@ public class BillPartyVotes extends AppCompatActivity{
         NAadapter = new BillVotesNameAdapter();
         NNadapter = new BillVotesNameAdapter();
 
-        layoutManager1 = new LinearLayoutManager(this){//these are here as we want to use the smooth scrolling provided by the NestedScrollView instead of the RecyclerView scrolling
+        layoutManager1 = new LinearLayoutManager(this) {//these are here as we want to use the smooth scrolling provided by the NestedScrollView instead of the RecyclerView scrolling
             @Override
-            public boolean canScrollVertically(){
+            public boolean canScrollVertically() {
                 return false;
             }
         };
-        layoutManager2 = new LinearLayoutManager(this){
+        layoutManager2 = new LinearLayoutManager(this) {
             @Override
-            public boolean canScrollVertically(){
+            public boolean canScrollVertically() {
                 return false;
             }
         };
@@ -83,83 +84,77 @@ public class BillPartyVotes extends AppCompatActivity{
         layoutManager2.setOrientation(LinearLayoutManager.VERTICAL);
         PartyAyeRView.setLayoutManager(layoutManager1);
         PartyNoeRView.setLayoutManager(layoutManager2);
+    }
 
-        PartyAyeRView.setAdapter(NAadapter);
-        PartyNoeRView.setAdapter(NNadapter);
+    @Override
+    protected void onResume() {
+        super.onResume();
         new Thread(new Runnable() {
             @Override
             public void run() {
-                for(int i=0; i<bill.VoteAyeList.size();i++){//get all of the yes votes from MPs of this party
-                    String compare = bill.VoteAyeList.get(i).Party;
-                    if(compare.equals(Party)){
-                        AyeVotes.add(bill.VoteAyeList.get(i));
 
-                    }
-                }
-                for(int i=0; i<bill.VoteNoeList.size();i++){//get all of the no votes from MPs of this party
-                    String compare = bill.VoteNoeList.get(i).Party;
-                    if(compare.equals(Party)){
-                        NoeVotes.add(bill.VoteNoeList.get(i));
-                    }
-                }
 
                 NetManager NetMgr = NetManager.getInstance(getApplicationContext());
-                NetManager.getInstance(getApplicationContext()).DetailsConList = NetManager.getInstance(getApplicationContext()).conList;
-                for(int i=0;i<NetMgr.conList.size();i++){//set the index of each MP in the main list as a variable of that mp (this is important for use in the adapter)
-                    if(i==121){}else {
-                        NetMgr.conList.get(i).pos = i;
+                if(Party == "Labour"){
+                    AyeVotes = bill.LabourAyeVotes;
+                    NoeVotes = bill.LabourNoVotes;
+                } else if (Party == "Conservative") {
+                    AyeVotes = bill.ConservativeAyeVotes;
+                    NoeVotes = bill.ConservativeNoVotes;
+                }
+                else {
+                    for (int i = 0; i < bill.VoteAyeList.size(); i++) {//get all of the yes votes from MPs of this party
+                        String compare = bill.VoteAyeList.get(i).Party;
+                        if (compare.equals(Party)) {
+                            AyeVotes.add(bill.VoteAyeList.get(i));
+
+                        }
+                    }
+                    for (int i = 0; i < bill.VoteNoeList.size(); i++) {//get all of the no votes from MPs of this party
+                        String compare = bill.VoteNoeList.get(i).Party;
+                        if (compare.equals(Party)) {
+                            NoeVotes.add(bill.VoteNoeList.get(i));
+                        }
                     }
                 }
-                for(int i=0;i<AyeVotes.size();i++){//get the full details for all of the yes voting MP's found earlier
-                    Vote tempVote = AyeVotes.get(i);
-                    for(int j=0;j<NetMgr.conList.size();j++){
-                        if(j==121){
-                        }else{
-                            Constituency tempCon = NetMgr.conList.get(j);
-                            Log.d("iterations", Integer.toString(j));
-                            if(tempVote.Con.equals(tempCon.ConName)){
-                                AyeCons.add(tempCon);
-                                break;
-                            }
-                        }}
+                try {
+                    Thread.sleep(50);//this is here to hold this thread to allow the oncreate to return and move onto the next thread before the recyclerview causes the ui thread to hang
+                                            //further comment: holy crap this is the dumbest idea ive had but it works
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-                for(int i=0;i<NoeVotes.size();i++){//get the full details for all of the no voting MP's found earlier
-                    Vote tempVote = NoeVotes.get(i);
-                    for(int j=0;j<NetMgr.conList.size();j++){
-                        if(j==121){
-
-                        }else{
-                            Constituency tempCon = NetMgr.conList.get(j);
-                            if(tempVote.Con.equals(tempCon.ConName)){
-                                NoeCons.add(tempCon);
-                                break;
-                            }
-                        }}
-                }
-                NAadapter.MPList = AyeCons;
+                NAadapter.MPList = AyeVotes;
                 NAadapter.isNoes = false;
-                NNadapter.MPList = NoeCons;
+                NNadapter.MPList = NoeVotes;
                 NNadapter.isNoes = true;
                 runOnUiThread(new Runnable() {
 
                     @Override
                     public void run() {
 
+                        PartyAyeRView.setAdapter(NAadapter);
+                        PartyNoeRView.setAdapter(NNadapter);
+
                         Title.setText(bill.Name);
-                        Total.append(" "+(AyeCons.size()+NoeCons.size()));
-                        Ayes.append(" "+AyeCons.size());
-                        Noes.append(" "+NoeCons.size());
-                        VoteB.setText(Party+" Vote Breakdown:");
+                        Total.append(" " + (AyeVotes.size() + NoeVotes.size()));
+                        Ayes.append(" " + AyeVotes.size());
+                        Noes.append(" " + NoeVotes.size());
+                        VoteB.setText(Party + " Vote Breakdown:");
                         NAadapter.notifyDataSetChanged();
                         NNadapter.notifyDataSetChanged();
                         Mask.setVisibility(View.GONE);
 
                     }
-                });
 
+                });
             }
         }).start();
 
-    }
 
+
+
+    }
 }
+
+
+

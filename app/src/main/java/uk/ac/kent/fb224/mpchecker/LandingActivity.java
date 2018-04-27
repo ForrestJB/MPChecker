@@ -290,7 +290,7 @@ public class LandingActivity extends AppCompatActivity implements NavigationView
         requestQueue.add(request3);
     }
     public void GetVoteCon(final String URL, final Vote vote, final Bill bill, final int count){
-        NetManager NetMgr = NetManager.getInstance(getApplicationContext());
+        final NetManager NetMgr = NetManager.getInstance(getApplicationContext());
         RequestQueue requestQueue = NetMgr.requestQueue;//fetch the request queue
         String id = URL.substring(34);
         final String OutURL = "http://lda.data.parliament.uk/members/"+id+".json";
@@ -309,9 +309,38 @@ public class LandingActivity extends AppCompatActivity implements NavigationView
                     } else if (vote.VoteType.equals("NoVote")){
                         bill.VoteNoeList.add(vote);
                     }
+                    if (vote.Party == "Labour"&& vote.VoteType.equals("AyeVote")){
+                        bill.LabourAyeVotes.add(vote);
+                    }
+                    else if (vote.Party == "Labour"&& vote.VoteType.equals("NoVote")){
+                        bill.LabourAyeVotes.add(vote);
+                    }
+                    else if(vote.Party == "Conservative" && vote.VoteType.equals("AyeVote")){//these lists are here to help keep load times down later on in the app
+                        bill.ConservativeAyeVotes.add(vote);
+                    }
+                    else if(vote.Party == "Conservative" && vote.VoteType.equals("NoVote")){//these lists are here to help keep load times down later on in the app
+                        bill.ConservativeNoVotes.add(vote);
+                    }
                     if(bill.count>=49&&(count == (bill.Ayes+bill.Noes)-1)){
-                        mask.setVisibility(View.GONE);
-                        content.setVisibility(View.VISIBLE);
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    Thread.sleep(2000);
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            mask.setVisibility(View.GONE);
+                                            content.setVisibility(View.VISIBLE);
+                                        }
+                                    });
+
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }).start();
+
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -321,7 +350,7 @@ public class LandingActivity extends AppCompatActivity implements NavigationView
             @Override
             public void onErrorResponse(VolleyError error) {
                 if(error3shown==false){
-                Toast.makeText(getApplicationContext(), "There has been an error retrieving vote data, MP votes might be incorrect", Toast.LENGTH_LONG).show();}
+                Toast.makeText(getApplicationContext(), "There has been an error retrieving vote data, some MP's votes might be incorrect", Toast.LENGTH_LONG).show();}
                 error3shown= true;
             }
         }); requestQueue.add(request4);

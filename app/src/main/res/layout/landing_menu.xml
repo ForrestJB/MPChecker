@@ -196,7 +196,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/YourMPLayout">
 
                     <android.support.constraint.ConstraintLayout
-                        android:id="@+id/con1"
+                        android:id="@+id/con11"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
@@ -239,7 +239,7 @@
                         android:layout_height="wrap_content"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/con1">
+                        app:layout_constraintTop_toBottomOf="@+id/con11">
 
                         <android.support.v7.widget.RecyclerView
                             android:id="@+id/NewsRView"

@@ -19,4 +19,8 @@ public class Bill {
     int Abstains;
    ArrayList<Vote> VoteAyeList = new ArrayList<Vote>();
    ArrayList<Vote> VoteNoeList = new ArrayList<Vote>();
+   ArrayList<Vote> LabourAyeVotes = new ArrayList<>();
+    ArrayList<Vote> LabourNoVotes = new ArrayList<>();
+   ArrayList<Vote> ConservativeAyeVotes = new ArrayList<>();
+    ArrayList<Vote> ConservativeNoVotes = new ArrayList<>();
 }

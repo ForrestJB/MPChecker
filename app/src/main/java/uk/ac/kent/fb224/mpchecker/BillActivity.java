@@ -89,7 +89,14 @@ public class BillActivity extends AppCompatActivity implements NavigationView.On
         adapter = new BillListAdapter();
         BillRecyclerView.setAdapter(adapter);
         adapter.BillList = NetManager.getInstance(this).BillList;
-
+        NetManager NetMgr = NetManager.getInstance(getApplicationContext());
+        NetManager.getInstance(getApplicationContext()).DetailsConList = NetManager.getInstance(getApplicationContext()).conList;
+        for (int i = 0; i < NetMgr.conList.size(); i++) {//set the index of each MP in the main list as a variable of that mp (this is important for use in later activities, but is here for optimisation purposes)
+            if (i == 121) {
+            } else {
+                NetMgr.conList.get(i).pos = i;
+            }
+        }
 
     }
 

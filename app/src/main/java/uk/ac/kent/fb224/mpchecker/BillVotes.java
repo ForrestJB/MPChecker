@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -39,6 +40,7 @@ public class BillVotes extends AppCompatActivity {
     private Button PartyButton;
     private Button NameButton;
     private boolean isNameSelected = false;
+    private ViewGroup Mask;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +60,7 @@ public class BillVotes extends AppCompatActivity {
         Title = findViewById(R.id.BVTitle);
         PartyButton = findViewById(R.id.BVPartyButton);
         NameButton = findViewById(R.id.BVNameButton);
+        Mask = findViewById(R.id.MaskCon);
 
         Ayes.append(" "+Integer.toString(bill.Ayes));
         Noes.append(" "+Integer.toString(bill.Noes));
@@ -90,6 +93,7 @@ public class BillVotes extends AppCompatActivity {
         PAadapter = new BillVotesPartyAdapter();
         PartyAyeRView.setAdapter(PAadapter);
         PartyNoeRView.setAdapter(PNadapter);
+
         for(int i=0; i<bill.VoteAyeList.size();i++){
             final Vote vote;
             boolean add = false;
@@ -134,31 +138,7 @@ public class BillVotes extends AppCompatActivity {
                 PNoeList.add(vote.Party);
             }
         }
-        NetManager NetMgr = NetManager.getInstance(getApplicationContext());
-        for(int i=0;i<bill.VoteAyeList.size();i++){//get the full details for all of the yes voting MP's found earlier
-            Vote tempVote = bill.VoteAyeList.get(i);
-            for(int j=0;j<NetMgr.conList.size();j++){
-                if(j==121){
-                }else{
-                    Constituency tempCon = NetMgr.conList.get(j);
-                    if(tempVote.Name.equals(tempCon.MPName)){
-                        AllAyeList.add(tempCon);
-                        break;
-                    }
-                }}
-        }
-        for(int i=0;i<bill.VoteNoeList.size();i++){//get the full details for all of the no voting MP's found earlier
-            Vote tempVote = bill.VoteNoeList.get(i);
-            for(int j=0;j<NetMgr.conList.size();j++){
-                if(j==121){
-                }else{
-                    Constituency tempCon = NetMgr.conList.get(j);
-                    if(tempVote.Name.equals(tempCon.MPName)){
-                        AllNoeList.add(tempCon);
-                        break;
-                    }
-                }}
-        }
+
         PAadapter.PartyList = PAyeList;
         PNadapter.PartyList = PNoeList;
         PAadapter.BillPosition = BillPosition;
@@ -167,8 +147,8 @@ public class BillVotes extends AppCompatActivity {
         PNadapter.VoteList = bill.VoteNoeList;
         PAadapter.notifyDataSetChanged();
         PNadapter.notifyDataSetChanged();
-        NNadapter.MPList = AllNoeList;
-        NAadapter.MPList = AllAyeList;
+        NNadapter.MPList = bill.VoteNoeList;
+        NAadapter.MPList = bill.VoteAyeList;
 
         PartyButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -192,11 +172,29 @@ public class BillVotes extends AppCompatActivity {
                 }else{
                     NameButton.setBackgroundColor(getResources().getColor(R.color.colorAccent));
                     PartyButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                    PartyAyeRView.setAdapter(NAadapter);
-                    PartyNoeRView.setAdapter(NNadapter);
-                    NAadapter.notifyDataSetChanged();
-                    NNadapter.notifyDataSetChanged();
-                    isNameSelected=true;
+                    Mask.setVisibility(View.VISIBLE);
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                Thread.sleep(50);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    PartyAyeRView.setAdapter(NAadapter);
+                                    PartyNoeRView.setAdapter(NNadapter);
+                                    NAadapter.notifyDataSetChanged();
+                                    NNadapter.notifyDataSetChanged();
+                                    isNameSelected=true;
+                                    Mask.setVisibility(View.GONE);
+                                }
+                            });
+                        }
+                    }).start();
                 }
             }
         });
