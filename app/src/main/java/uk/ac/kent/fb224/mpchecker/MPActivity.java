@@ -164,30 +164,7 @@ public class MPActivity extends AppCompatActivity implements NavigationView.OnNa
                 Log.d("AllMps", "button pressed"); // Todo remove debug
             }
         });
-//        for(int k=0;k<=649;k++) {
-//        mMPReference = FirebaseDatabase.getInstance().getReference().child("Raw Data").child("MP").child(Integer.toString(k));
-//        ValueEventListener MPListener = new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                final Constituency NewCon = dataSnapshot.getValue(Constituency.class);
-//                NetManager.getInstance(MPActivity.this).conList.add(NewCon);
-//                adapter.notifyDataSetChanged();
-//            }
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        };
-//        mMPReference.addValueEventListener(MPListener);
-////        if(k==649){ todo: this does not proc when the network is finished, but procs instantly, will need to be rethought
-////            MaskText = findViewById(R.id.MPLoadText);
-////            MaskImage = findViewById(R.id.MPLoadMask);
-////            MaskSpinner = findViewById(R.id.MPLoadMaskSpinner);
-////            MaskImage.setVisibility(View.GONE);
-////            MaskSpinner.setVisibility(View.GONE);
-////            MaskText.setVisibility(View.GONE);
-////        }
-//    }
+
         adapter.notifyDataSetChanged();
     }
 
@@ -306,7 +283,11 @@ public void addTextListener(String query){
         }
         return super.onOptionsItemSelected(item);
     }
-//    public void GetMP(String URL, final String conName){ todo now redundant, remove?
+
+    //this is the code to load current MPs from the API, although not currently used
+    //it is left here if I ever need to update my database with a large number of new MPs
+
+//    public void GetMP(String URL, final String conName){
 //        NetManager NetMgr = NetManager.getInstance(getApplicationContext());
 //        RequestQueue requestQueue = NetMgr.requestQueue;//fetch the request queue
 //        StringRequest request2 = new StringRequest(Request.Method.GET, URL,

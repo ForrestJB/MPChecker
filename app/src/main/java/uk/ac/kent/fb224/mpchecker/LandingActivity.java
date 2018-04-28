@@ -75,7 +75,7 @@ public class LandingActivity extends AppCompatActivity implements NavigationView
     private Scene LandingScene;
     private Scene MPScene;
     private ViewGroup SceneRoot;
-
+    private TextView LoadPerc;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,6 +90,7 @@ public class LandingActivity extends AppCompatActivity implements NavigationView
         MPImage = findViewById(R.id.LandMPImage);
         toolbar = findViewById(R.id.toolbar);
         YourMp = findViewById(R.id.YourMPLayout);
+        LoadPerc = findViewById(R.id.LandingLoadPercetage);
 
         SceneRoot = (ViewGroup) findViewById(R.id.drawer_layout);
         LandingScene = Scene.getSceneForLayout(SceneRoot, R.layout.landing_menu, this);
@@ -321,27 +322,6 @@ public class LandingActivity extends AppCompatActivity implements NavigationView
                     else if(vote.Party == "Conservative" && vote.VoteType.equals("NoVote")){//these lists are here to help keep load times down later on in the app
                         bill.ConservativeNoVotes.add(vote);
                     }
-                    if(bill.count>=49&&(count == (bill.Ayes+bill.Noes)-1)){
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    Thread.sleep(2000);
-                                    runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            mask.setVisibility(View.GONE);
-                                            content.setVisibility(View.VISIBLE);
-                                        }
-                                    });
-
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }).start();
-
-                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -392,9 +372,17 @@ public class LandingActivity extends AppCompatActivity implements NavigationView
                 if (UserMP.MPImageUrl != null) {//check to ensure there is an image to prevent crashes if the URL is null
                     NetManager.getInstance(getApplicationContext()).imageLoader.get(UserMP.MPImageUrl, imageListener1);//setup NetManager object, fetch MP image
                 }
-
-                GetNews();
-                GetBills();
+                NetManager NetMgr = NetManager.getInstance(this);
+                if(NetMgr.BillList.size()<50) {//this is a simple check to see if the bills have already been loaded or not
+                    LoadPerc.setText("0% Loaded");
+                    GetNews();
+                    GetBills();
+                    LoadChecker();
+                }
+                else{
+                    mask.setVisibility(View.GONE);
+                    content.setVisibility(View.VISIBLE);
+                }
             }
         }
     }
@@ -460,7 +448,60 @@ public class LandingActivity extends AppCompatActivity implements NavigationView
             }
         }); requestQueue.add(request);
     }
+    public void LoadChecker(){//this method is used to check if all the bill sand theier ascosiated votes have been loaded
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+            boolean loaded = false;
+            boolean wait = true;
+            final int[] lastInt = {0};
+            while(loaded == false){
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                NetManager NetMgr = NetManager.getInstance(getApplicationContext());
+                if(NetMgr.BillList.size()>=50){
+                    for(int i=0; i<NetMgr.BillList.size();i++){
+                        final int[] tempInt = {i};//this is to get around the restrictions forcing you to make variables used in inner
+                                                  //classes final, as you can still change the array value even if its final
+                        Log.d("iter", Integer.toString(i));
+                        Bill tempBill = NetMgr.BillList.get(i);
+                        if(tempInt[0]>lastInt[0]) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    LoadPerc.setText(Integer.toString((tempInt[0] + 1) * 2) + "% Loaded");//update the UI with percentage of bills loaded
+                                    lastInt[0]=tempInt[0];
+                                }
+                            });
+                        }
+                        try {
+                            if ((tempBill.Noes + tempBill.Ayes) > (tempBill.VoteAyeList.size() + tempBill.VoteNoeList.size())) {
+                                break;
+                            }
+                            if (i == 49) {
+                                loaded = true;
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        mask.setVisibility(View.GONE);
+                                        content.setVisibility(View.VISIBLE);
+                                    }
+                                });
+                            }
+                        }catch(NullPointerException e){//if any of the values come back as null then that bill has not been loaded yet
+                                                       //and the code should be relooped until the while loop is broken
+                            break;
+                        }
+                    }
+                }
+            }
 
+            }
+        }).start();
+    }
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();

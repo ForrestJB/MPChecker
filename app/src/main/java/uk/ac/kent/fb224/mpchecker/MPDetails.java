@@ -321,6 +321,10 @@ public class MPDetails extends AppCompatActivity {
 
                 ;mElectionDatabase.addValueEventListener(ElectionListener);
             };
+
+        //again, this is the code that was used to pull the election results from the api adn store them onto my database
+        //although not used at the minute, it is left incase I need to update the database in the future
+
 //        String ElectionURL = "http://lda.data.parliament.uk/electionresults.json?_view=Elections&_pageSize=500&_sort=-election.label&_page=0";
 //        String ElectionURL2 = "http://lda.data.parliament.uk/electionresults.json?_view=Elections&_pageSize=500&_sort=-election.label&_page=1";
 //        JsonObjectRequest ERequest = new JsonObjectRequest(Request.Method.GET, ElectionURL2, null, new Response.Listener<JSONObject>() {

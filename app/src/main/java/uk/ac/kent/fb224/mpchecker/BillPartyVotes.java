@@ -119,7 +119,7 @@ public class BillPartyVotes extends AppCompatActivity {
                 }
                 try {
                     Thread.sleep(50);//this is here to hold this thread to allow the oncreate to return and move onto the next thread before the recyclerview causes the ui thread to hang
-                                            //further comment: holy crap this is the dumbest idea ive had but it works
+                                            //further comment: this seems like the completely wrong kind of way to fix this but it works
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
