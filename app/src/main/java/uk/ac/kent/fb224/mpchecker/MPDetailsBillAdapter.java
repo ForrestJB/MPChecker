@@ -32,7 +32,7 @@ public class MPDetailsBillAdapter extends RecyclerView.Adapter<MPDetailsBillAdap
             @Override
             public void onClick(View v) {
                 int position = MPDetailsBillAdapter.ViewHolder.this.getLayoutPosition();
-                Intent intent = new Intent(v.getContext(), BillDetails.class);
+                Intent intent = new Intent(v.getContext(), BillVotes.class);
                 intent.putExtra("Bill_Position", position);
                 context.startActivity(intent);
             }

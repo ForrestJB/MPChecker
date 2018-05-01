@@ -12,7 +12,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by Tree1 on 20/03/2018.
@@ -36,6 +40,7 @@ public class BillVotes extends AppCompatActivity {
     private TextView Title;
     private TextView Ayes;
     private TextView Noes;
+    private TextView Date;
     private TextView Total;
     private Button PartyButton;
     private Button NameButton;
@@ -60,6 +65,7 @@ public class BillVotes extends AppCompatActivity {
         Title = findViewById(R.id.BVTitle);
         PartyButton = findViewById(R.id.BVPartyButton);
         NameButton = findViewById(R.id.BVNameButton);
+        Date = findViewById(R.id.BVDate);
         Mask = findViewById(R.id.MaskCon);
 
         Ayes.append(" "+Integer.toString(bill.Ayes));
@@ -67,6 +73,16 @@ public class BillVotes extends AppCompatActivity {
         int TotalVotes = bill.Ayes + bill.Noes;
         Total.append(" "+Integer.toString(TotalVotes));
         Title.setText(bill.Name);
+        try {
+            DateFormat raw = new SimpleDateFormat("yyyy-MM-dd");
+            DateFormat output = new SimpleDateFormat("E, MMM dd yyyy");
+            java.util.Date newDate = null;
+            newDate = raw.parse(bill.Date);
+            String ParsedDate = output.format(newDate);
+            Date.setText(ParsedDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
         PAadapter = new BillVotesPartyAdapter();
         PNadapter = new BillVotesPartyAdapter();

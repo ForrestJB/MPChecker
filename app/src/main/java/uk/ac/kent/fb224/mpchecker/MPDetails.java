@@ -99,6 +99,8 @@ public class MPDetails extends AppCompatActivity {
     public TextView EResult;
     public ImageView Emask;
     public ProgressBar ESpinner;
+    private ImageView billMask;
+    private ProgressBar billSpinner;
     public Button Contact;
     private FloatingActionButton FavButton;
     private boolean pagetwo = true;
@@ -175,6 +177,8 @@ public class MPDetails extends AppCompatActivity {
         Emask = findViewById(R.id.MPDEMask);
         ESpinner = findViewById(R.id.MPDESpinner);
         FavButton = findViewById(R.id.MPDetailsFav);
+        billMask = findViewById(R.id.MPDetailsMask);
+        billSpinner = findViewById(R.id.MPDetailsSpinner);
         Name.setText(MP.MPName);
         Con.setText(MP.ConName);
         Role.setText(MP.MPRole);
@@ -189,27 +193,7 @@ public class MPDetails extends AppCompatActivity {
         pagetwo = false;
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         BillRecyclerView.setLayoutManager(layoutManager);
-        adapter = new MPDetailsBillAdapter();
-        NetManager.getInstance(this).BillList = NetManager.getInstance(this).StaticBillList; // reset the billist so we can set new values for MPVote, which keeps track of how this mp voted for each bill
-        for(int i=0;i<NetManager.getInstance(this).BillList.size();i++){
-            Bill tempBill = NetManager.getInstance(this).BillList.get(i);
-            for(int j=0;j<tempBill.VoteAyeList.size();j++){
-                Vote tempVote = tempBill.VoteAyeList.get(j);
-                if(MP.ConName.equals(tempVote.Con)){
-                    NetManager.getInstance(this).BillList.get(i).MPVote = "AyeVote";
-                    break;
-                }
-            }
-            for(int x=0;x<tempBill.VoteNoeList.size();x++){
-                Vote tempVote = tempBill.VoteNoeList.get(x);
-                if(MP.ConName.equals(tempVote.Con)){
-                    NetManager.getInstance(this).BillList.get(i).MPVote = "NoVote";
-                    break;
-                }
-            }
-        }
-        adapter.BillList = NetManager.getInstance(this).BillList;
-        BillRecyclerView.setAdapter(adapter);
+
         final NetManager NetMgr = NetManager.getInstance(getApplicationContext());
         if (MP.MPImageUrl != null) {//check to ensure there is an image to prevent crashes if the URL is null
             NetMgr.imageLoader.get(MP.MPImageUrl, imageListener1);//setup NetManager object, fetch MP image
@@ -321,7 +305,7 @@ public class MPDetails extends AppCompatActivity {
 
                 ;mElectionDatabase.addValueEventListener(ElectionListener);
             };
-
+        doBills();
         //again, this is the code that was used to pull the election results from the api adn store them onto my database
         //although not used at the minute, it is left incase I need to update the database in the future
 
@@ -359,6 +343,50 @@ public class MPDetails extends AppCompatActivity {
 //
 //            }
 //        }); requestQueue.add(ERequest);
+
+    }
+    public void doBills(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(50);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                adapter = new MPDetailsBillAdapter();
+                NetManager.getInstance(MPDetails.this).BillList = NetManager.getInstance(MPDetails.this).StaticBillList; // reset the billist so we can set new values for MPVote, which keeps track of how this mp voted for each bill
+                for(int i=0;i<NetManager.getInstance(MPDetails.this).BillList.size();i++){
+                    Bill tempBill = NetManager.getInstance(MPDetails.this).BillList.get(i);
+                    Log.d("bill number", Integer.toString(i));
+                    for(int j=0;j<tempBill.VoteAyeList.size();j++){
+                        Vote tempVote = tempBill.VoteAyeList.get(j);
+                        if(MP.ConName.equals(tempVote.Con)){
+                            NetManager.getInstance(MPDetails.this).BillList.get(i).MPVote = "AyeVote";
+                            break;
+                        }
+                    }
+                    for(int x=0;x<tempBill.VoteNoeList.size();x++){
+                        Vote tempVote = tempBill.VoteNoeList.get(x);
+                        if(MP.ConName.equals(tempVote.Con)){
+                            NetManager.getInstance(MPDetails.this).BillList.get(i).MPVote = "NoVote";
+                            break;
+                        }
+                    }
+                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.BillList = NetManager.getInstance(MPDetails.this).BillList;
+                        BillRecyclerView.setAdapter(adapter);
+                        adapter.notifyDataSetChanged();
+                        billMask.setVisibility(View.GONE);
+                        billSpinner.setVisibility(View.GONE);
+                    }
+                });
+
+            }
+        }).start();
 
     }
     public Election loadElection(String ElectionURL) throws ParseException, XmlPullParserException, IOException {

@@ -33,7 +33,7 @@ public class BillListAdapter extends RecyclerView.Adapter<BillListAdapter.ViewHo
             @Override
             public void onClick(View v) {
                 int position = ViewHolder.this.getLayoutPosition();
-                Intent intent = new Intent(v.getContext(), BillDetails.class);
+                Intent intent = new Intent(v.getContext(), BillVotes.class);
                 intent.putExtra("Bill_Position", position);
                 context.startActivity(intent);
             }

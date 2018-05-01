@@ -11,6 +11,8 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
@@ -33,7 +35,7 @@ import org.json.JSONObject;
 public class FindActivityPostcode extends AppCompatActivity{
     private EditText searchTxt;
     private ConstraintLayout ConSearch;
-
+    private ViewGroup ConButton;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +43,7 @@ public class FindActivityPostcode extends AppCompatActivity{
 
         searchTxt = (EditText) findViewById(R.id.PostSearchEditText);
         ConSearch = findViewById(R.id.TitleAni5);
+        ConButton = findViewById(R.id.SearchCons);
         searchTxt.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -51,6 +54,13 @@ public class FindActivityPostcode extends AppCompatActivity{
             }
         });
 
+        ConButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), FindActivityCon.class);
+                startActivity(intent);
+            }
+        });
 
     }
     public void PostSearch(String Input){

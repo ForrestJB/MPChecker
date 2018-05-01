@@ -8,6 +8,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -21,10 +22,12 @@ public class NetManager {
     static ArrayList<Constituency> conList = new ArrayList<Constituency>();
     static ArrayList<Constituency> conFavList = new ArrayList<Constituency>();
     static ArrayList<Constituency> DetailsConList = new ArrayList<Constituency>();
+    static ArrayList<Constituency> SortedConList = new ArrayList<>();
     static ArrayList<Bill> BillList = new ArrayList<Bill>();
     static ArrayList<Bill> StaticBillList = new ArrayList<Bill>();
     static ArrayList<Bill> MPDetailsBillList = new ArrayList<Bill>();
     static ArrayList<News> NewsList = new ArrayList<>();
+    public boolean BillsLoaded = false;
     public Boolean isLoaded = false;
     public ImageLoader imageLoader;
 

@@ -115,11 +115,7 @@ public class LandingActivity extends AppCompatActivity implements NavigationView
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        for(int i=0;i<50;i++){//initialise the bill lists with null objects, these will be overwritten during loading
-            Bill tempbill = null;
-            NetManager.getInstance(this).BillList.add(tempbill);
-            NetManager.getInstance(this).StaticBillList.add(tempbill);
-        }
+
         if(NetManager.getInstance(LandingActivity.this).isLoaded==false){//if the list of MP's has not been loaded yet
             for(int k=0;k<=649;k++) {
                 mMPReference = FirebaseDatabase.getInstance().getReference().child("Raw Data").child("MP").child(Integer.toString(k));
@@ -136,7 +132,7 @@ public class LandingActivity extends AppCompatActivity implements NavigationView
                             NewCon.MPImageUrl = "placeholder";
                         }
                         NetManager.getInstance(LandingActivity.this).conList.add(NewCon);
-                        if (NetManager.getInstance(LandingActivity.this).conList.size()==649){//this serves as a listener, to remove the loading page once the MP List has been loaded
+                        if (NetManager.getInstance(LandingActivity.this).conList.size()==649){//this serves as a listener, to execute startManager once all the MPs have been loaded form the database
                             NetManager.getInstance(LandingActivity.this).isLoaded = true;
                             startManager();
                         }
@@ -349,6 +345,7 @@ public class LandingActivity extends AppCompatActivity implements NavigationView
         }else{//else retrieve the MP the user set
 //            String FoundMP = sharedPreferences.getString("User_MP", "error");
             if(FoundMP.equals("error")){
+                //todo what should go here?
             }else {
                 for(int i=0;i<NetManager.getInstance(getApplicationContext()).conList.size();i++){
                     if(i==121){}else {
@@ -373,11 +370,17 @@ public class LandingActivity extends AppCompatActivity implements NavigationView
                     NetManager.getInstance(getApplicationContext()).imageLoader.get(UserMP.MPImageUrl, imageListener1);//setup NetManager object, fetch MP image
                 }
                 NetManager NetMgr = NetManager.getInstance(this);
-                if(NetMgr.BillList.size()<50) {//this is a simple check to see if the bills have already been loaded or not
+                if(NetMgr.BillsLoaded == false) {//this is a simple check to see if the bills have already been loaded or not
+                    for(int i=0;i<50;i++){//initialise the bill lists with null objects, these will be overwritten during loading
+                        Bill tempbill = null;
+                        NetManager.getInstance(this).BillList.add(tempbill);
+                        NetManager.getInstance(this).StaticBillList.add(tempbill);
+                    }
                     LoadPerc.setText("0% Loaded");
                     GetNews();
                     GetBills();
                     LoadChecker();
+                    NetManager.getInstance(this).BillsLoaded = true;
                 }
                 else{
                     mask.setVisibility(View.GONE);
