@@ -24,20 +24,23 @@ public class FindActivityCon extends AppCompatActivity{
     private RecyclerView ConView;
     private LinearLayoutManager layoutManager;
     private ConListAdapter adapter;
+    private ArrayList<Constituency> tempList = new ArrayList<>();
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.find_layout_con);
         ConView = findViewById(R.id.ConRView);
         NetManager NetMgr = NetManager.getInstance(this);
-
-        ArrayList<Constituency> tempList = NetMgr.conList;
-        for(int i=121;i<=tempList.size();i++){
-            Constituency tempCon = tempList.get(649);
-            tempList.add(i, tempCon);
-            tempList.remove(650);
+        tempList = NetMgr.conList;
+        if(NetMgr.conSortedDone == false) {
+            for (int i = 121; i <= tempList.size(); i++) {
+                Constituency tempCon = tempList.get(649);
+                tempList.add(i, tempCon);
+                tempList.remove(650);
+            }
+            tempList.remove(649);
+            NetManager.getInstance(this).conSortedDone = true;
         }
-        tempList.remove(649);
 
         Collections.sort(tempList, Constituency.ConNameSort);
 

@@ -29,6 +29,7 @@ public class NetManager {
     static ArrayList<News> NewsList = new ArrayList<>();
     public boolean BillsLoaded = false;
     public Boolean isLoaded = false;
+    public boolean conSortedDone = false;
     public ImageLoader imageLoader;
 
     private ImageLoader.ImageCache imageCache = new ImageLoader.ImageCache() {
