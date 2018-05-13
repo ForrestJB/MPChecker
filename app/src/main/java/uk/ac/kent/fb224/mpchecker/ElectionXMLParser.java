@@ -14,7 +14,6 @@ import java.text.ParseException;
  *
  * Ok so this class is here to parse the XML file that contains the details of the most recent published election for the chosen MP/Constituency
  * its pretty unoptimised and ugly, but it does work for this specific xml format that Parliament is using
- * todo full comments for this piece of shit and be done with it
  */
 
 public class ElectionXMLParser {
